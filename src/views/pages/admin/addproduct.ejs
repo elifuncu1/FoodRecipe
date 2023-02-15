@@ -1,0 +1,178 @@
+<title><%-title  %> </title>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script>
+    var subjectObject = {
+      "Kategoriler": {
+        "MeyveSebze": ["Patates,Soğan,Sarımsak", "Sebze", "Meyve", "Narenciye","Salata Malzemeleri","Yeşillik ve Otlar","Kurutulmuş Meyve ve Sebze","Kabuklu Sert Meyveler","Dondurulmuş Meyve Sebze"],
+        "Et Ve Tavuk": ["Kırmızı Et", "Beyaz Et", "Yumurta", "Sucuk","Sosis ve Salam","Pastırma ve Kavurma","Balık Konservesi","Dondurulmuş Et ve Balık"],
+        "Süt Ve Süt Ürünleri" : ['Süt', 'Yoğurt', 'Ayran ve Kefir', 'Beyaz Peynir',"Krem Peynir","Kaşar Peyniri","Yöresel Gurme Peynir","Kaymak ve Krema","Terayağ ve Margarin","Maya","Probiyotil ve Protein Ürünleri","Tatlı ve Puding","Çocuk Ürünleri" ],   
+        "Kahvaltılık" : ['Yumurta', 'Zeytin', 'Reçel', 'Bal','Krem Çikolata ve Ezme',"Kahvaltılık Gevrek","Tahin,Pekmez ve Helva"],
+        "Pastahane" : ['Katmer Lavaş ve Bazlama',"Paketli Ekmekler",'Hamur ve Pasta Malzemleri','Un'],
+        "Dondurulmuş Ürünler"  : ['Kap Dondurma'],
+        "Yemeklik Malzemeler": ['Sıvı Yağlar','Tereyağ ve Margarin','Mutfak Şeker','Makarna ve Mantı','Pirinç ve Bulgur','Bakliyat',"Salça","Ketçap Mayonez ve Sos","Konserve","Turşu","Hazır Yemek ve Meze","Çorba ve Bulyon","Tuz Baharat ve Harç","Sirke ve Salata Sosları","Yufka","Hamur ve Pasta Malzemeleri"],
+        "Atıştırmalık": ['Çikolata','Bisküvi','Kuruyemiş'],
+  
+      },
+    }
+    window.onload = function() {
+      var subjectSel = document.getElementById("subject");
+      var topicSel = document.getElementById("topic");
+      var chapterSel = document.getElementById("chapter");
+      for (var x in subjectObject) {
+        subjectSel.options[subjectSel.options.length] = new Option(x, x);
+      }
+      subjectSel.onchange = function() {
+        //empty Chapters- and Topics- dropdowns
+        chapterSel.length = 1;
+        topicSel.length = 1;
+        //display correct values
+        for (var y in subjectObject[this.value]) {
+          topicSel.options[topicSel.options.length] = new Option(y, y);
+        }
+      }
+      topicSel.onchange = function() {
+        //empty Chapters dropdown
+        chapterSel.length = 1;
+        //display correct values
+        var z = subjectObject[subjectSel.value][this.value];
+        for (var i = 0; i < z.length; i++) {
+          chapterSel.options[chapterSel.options.length] = new Option(z[i], z[i]);
+        }
+      }
+    }
+    </script>
+<!------ Include the above in your HEAD tag ---------->
+<body style="background-color: #1B2430;">
+<form action="/izzycode/postfoodIngredients" method="post" enctype="multipart/form-data" class="form-horizontal">
+<fieldset>
+
+<!-- Form Name -->
+<legend style="color: white;">Yemek Malzemeleri</legend>
+
+<!-- Text input-->
+
+<!-- Text input-->
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="product_name">Malzeme Adı</label>  
+  <div class="col-md-4">
+  <input style="background-color: black;color:white" id="product_name" name="product_name" placeholder="Ürün Adı" class="form-control input-md" required="" type="text">
+    
+  </div>
+</div>
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="product_weight">Malzeme Subname</label>
+  <div class="col-md-4">                     
+    <input style="background-color: black;color:white" class="form-control" id="product_subname"  name="product_subname"></textarea>
+  </div>
+</div>
+<!-- Select Basic -->
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="product_categorie">Ürün Kategorisi</label>
+  <div class="col-md-4">
+    <form name="form1" id="form1" action="/action_page.php">
+      <select name="subject" id="subject">
+          <option  value="" selected="selected">Select subject</option>
+        </select>
+        <br><br>
+      <select name="topic" id="topic">
+          <option value="" selected="selected">Please select subject first</option>
+        </select>
+        <br><br>
+      <select name="chapter" id="chapter">
+          <option value="" selected="selected">Please select topic first</option>
+        </select>
+        <br><br>  
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Textarea -->
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="product_id">Malzeme ID</label>
+  <div class="col-md-4">                     
+    <input style="background-color: black;color:white" class="form-control" id="product_id"  name="product_id"></textarea>
+  </div>
+</div>
+<div class="form-group">
+    <label style="color: white;" class="col-md-4 control-label" for="product_weight">Malzeme Gramajı</label>
+    <div class="col-md-4">                     
+      <input style="background-color: black;color:white" class="form-control" id="product_weight"  name="product_weight"></textarea>
+    </div>
+  </div>
+ 
+<div class="form-group">
+    <label style="color: white;" class="col-md-4 control-label" for="product_type">Malzeme Tipi</label>
+    <div class="col-md-4">                     
+      <select name="typeofIngredients">
+        <option value="Katı">Katı</option>
+        <option value="Sıvı">Sıvı</option>
+        <option value="Diğer">Diğer</option>
+      </select>
+    </div>
+  </div>
+<!-- Text input-->
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="product_description">Ürün Özellikleri</label>
+  <div class="col-md-4">                     
+    <textarea style="background-color: black;color:white" class="form-control" id="product_description" placeholder="Not eklemek isterseniz ekleyiniz." name="product_ozellik"></textarea>
+  </div>
+</div>
+ <!-- File Button --> 
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="files">Malzeme Fotoğrafı</label>
+  <div class="col-md-4">  
+    <input style="background-color: black;color:white" id="image" name="image" class="input-files" type="file">    
+  </div>
+</div>
+
+
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="singlebutton" ></label>
+  <div class="col-md-4">
+    <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary">Yükle</button>
+    <img height="80" width="80" id="blah0" src="#" alt="your image"/>
+  </div>
+  </div>
+
+<script>
+   $(document).ready(function(){
+        $("#images").change(function(){
+          
+            $("#blah").show();
+        });
+    });
+
+
+</script>
+
+
+
+
+</fieldset>
+</form>
+</body>
+<script>
+  images.onchange = evt => {
+  var $div = $('img[id^="blah"]:last');
+
+  // Read the Number from that DIV's ID (i.e: 3 from "klon3")
+  // And increment that number by 1
+  var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
+
+  // Clone it and assign the new ID (i.e: from num 4 to ID "klon4")
+  var $klon = $div.clone().prop('id', 'blah'+num );
+
+  // Finally insert $klon wherever you want
+  $div.after( $klon.text('klon'+num) );
+  const [file] = images.files
+  if (file) {
+    for(let i = 0;i<images.files.length;i++){
+      $(`#blah${i}`).attr("src",URL.createObjectURL(images.files[i]));    
+    }
+  }
+}
+</script>

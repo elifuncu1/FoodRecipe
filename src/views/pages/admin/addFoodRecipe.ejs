@@ -1,0 +1,118 @@
+<title><%-title  %> </title>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    
+<!------ Include the above in your HEAD tag ---------->
+<body style="background-color: #1B2430;">
+<form action="/izzycode/postfoodRecipe" method="post" enctype="multipart/form-data" class="form-horizontal">
+<fieldset>
+
+<!-- Form Name -->
+<legend style="color: white;">Yemek Tarifi</legend>
+
+<!-- Text input-->
+
+<!-- Text input-->
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="product_name">Yemek Tarifi Adı</label>  
+  <div class="col-md-4">
+  <input style="background-color: black;color:white" id="product_name" name="product_name" placeholder="Ürün Adı" class="form-control input-md" required="" type="text">
+    
+  </div>
+</div>
+<!-- Select Basic -->
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="product_categorie">Ürün Kategorisi</label>
+  <div class="col-md-4">
+    <form name="form1" id="form1" action="/action_page.php">
+      <select class="selectpicker" multiple title="Pick your condiments" data-live-search="true">
+          <% IngredientNames.forEach(element => { %>
+            <option value="<%-element%>"><%-element%> </option>
+          <% }) %>
+        </select>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="product_description">Yemek Malzemeleri</label>
+  <div class="col-md-4">                     
+    <textarea style="background-color: black;color:white" class="form-control" id="food_Ingredients" placeholder="Not eklemek isterseniz ekleyiniz." name="food_Ingredients"></textarea>
+  </div>
+</div>
+<!-- Textarea -->
+<!-- Text input-->
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="product_description">Yemek Açıklaması</label>
+  <div class="col-md-4">                     
+    <textarea style="background-color: black;color:white" class="form-control" id="product_description" placeholder="Not eklemek isterseniz ekleyiniz." name="product_description"></textarea>
+  </div>
+</div>
+ <!-- File Button --> 
+<div class="form-group">
+  <label style="color: white;" class="col-md-4 control-label" for="files">Malzeme Fotoğrafı</label>
+  <div class="col-md-4">  
+    <input style="background-color: black;color:white" id="image" name="image" class="input-files" type="file">    
+  </div>
+</div>
+
+
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="singlebutton" ></label>
+  <div class="col-md-4">
+    <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary">Yükle</button>
+    <img height="80" width="80" id="blah0" src="#" alt="your image"/>
+  </div>
+  </div>
+
+<script>
+   $(document).ready(function(){
+        $("#images").change(function(){
+          
+            $("#blah").show();
+        });
+    });
+
+
+</script>
+
+
+
+
+</fieldset>
+</form>
+</body>
+<script>
+  images.onchange = evt => {
+  var $div = $('img[id^="blah"]:last');
+
+  // Read the Number from that DIV's ID (i.e: 3 from "klon3")
+  // And increment that number by 1
+  var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
+
+  // Clone it and assign the new ID (i.e: from num 4 to ID "klon4")
+  var $klon = $div.clone().prop('id', 'blah'+num );
+
+  // Finally insert $klon wherever you want
+  $div.after( $klon.text('klon'+num) );
+  const [file] = images.files
+  if (file) {
+    for(let i = 0;i<images.files.length;i++){
+      $(`#blah${i}`).attr("src",URL.createObjectURL(images.files[i]));    
+    }
+  }
+}
+</script>
+<script>
+const array = "<%-NameAndIds%>"
+const selectElement = document.querySelector('.selectpicker');
+
+selectElement.addEventListener('change', (event) => {
+  const result = document.querySelector('.result');
+  const id = array.split(event.target.value+':')[1].split(',')[0];
+  console.log(array.split(event.target.value+':')[1].split(',')[0])
+  $('#food_Ingredients').val($('#food_Ingredients').val() + event.target.value+':'+id+':'+',');
+});
+</script>
