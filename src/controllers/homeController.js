@@ -9,6 +9,15 @@ var priceCalculateModule = require("./BusinessModules/ProductModules/priceCalcul
 const { postFoodIngredients } = require('./adminController');
 
 
+const testLayout = async (req, res, next) => {
+    console.log("alsfknaskljf")
+try{
+    res.render( 'user/homePage',{ layout: '../layouts/homeLayout', title: `Test`, description: ``, keywords: `` })
+}
+catch(err){
+    console.log(err)
+}
+}
 
 // GET
 //birim fiyatı bul !
@@ -132,5 +141,6 @@ module.exports = {
     getFoodRecipeList,
     GetFoodIngredientsList,
     Test,
-    getDetailsOfRecipe
+    getDetailsOfRecipe,
+    testLayout
 }

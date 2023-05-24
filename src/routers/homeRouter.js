@@ -5,8 +5,9 @@ const { route } = require('./adminRouter');
 
 //GET
 
-router.get('/GET/:ProductName/:categoryId/:quantity', homeController.getProductsWithPrice);
 
+router.get('/GET/:ProductName/:categoryId/:quantity', homeController.getProductsWithPrice);
+router.get('/test1',homeController.testLayout)
 
 router.get('/GET/FoodIngredientsList',homeController.GetFoodIngredientsList)
 router.get('/GET/FoodRecipeList',homeController.getFoodRecipeList)
