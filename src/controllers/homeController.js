@@ -6,18 +6,30 @@ const fs = require('fs');
 const { find } = require('../models/products');
 const { json } = require('body-parser');
 var priceCalculateModule = require("./BusinessModules/ProductModules/priceCalculateModule");//Modülden çalışmaya devamke unutmuyoruz "DRY"
+var splitModule = require("./BusinessModules/ProductModules/splitModule");//Modülden çalışmaya devamke unutmuyoruz "DRY"
 const { postFoodIngredients } = require('./adminController');
 
 
-const testLayout = async (req, res, next) => {
-    console.log("alsfknaskljf")
-try{
-    res.render( 'user/homePage',{ layout: '../layouts/homeLayout', title: `Test`, description: ``, keywords: `` })
+const homePage = async (req, res, next) => {
+    try {
+
+        res.render('home/homePage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: `` })
+    }
+    catch (err) {
+        console.log(err)
+    }
 }
-catch(err){
-    console.log(err)
-}
-}
+const showDetailsOfRecipePage = async (req, res, next) => {
+    try {
+      const selectedRecipe = await foodRecipes.findOne({ active: "1" });
+      
+      const foodIngredientsList = await splitModule.splitIngredients(selectedRecipe)
+      res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: ``, selectedRecipe,foodIngredientsList});
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
 
 // GET
 //birim fiyatı bul !
@@ -25,12 +37,12 @@ catch(err){
 const getProductsWithPrice = async (req, res, next) => {
     try {
         req.params.ProductName.split(":")
-        const productsList = await Products.find({ $and: [{ category_id: Number(req.params.categoryId) } , { product_name:{"$regex": req.params.ProductName, $options: 'i' } } ]}).lean();
+        const productsList = await Products.find({ $and: [{ category_id: Number(req.params.categoryId) }, { product_name: { "$regex": req.params.ProductName, $options: 'i' } }] }).lean();
         const upperCasedProducts = priceCalculateModule.forToUpperCase(productsList);//aramada hata ile karşılaşmamak için!
-        const productsWithTotalPrice = priceCalculateModule.getCostOfProduct(upperCasedProducts,req.params.quantity,1);//ilk parametre listenin kendisi knk ikincisi istediğim miktar.
+        const productsWithTotalPrice = priceCalculateModule.getCostOfProduct(upperCasedProducts, req.params.quantity, 1);//ilk parametre listenin kendisi knk ikincisi istediğim miktar.
         //şimdi requestten gelen mikar değerini almışke 
-        
-        
+
+
         res.json(productsWithTotalPrice);//şimdilikss
 
 
@@ -39,32 +51,32 @@ const getProductsWithPrice = async (req, res, next) => {
     }
 };
 
-const getDetailsOfRecipe = async(req,res,next)=>{
-    
-    try{
+const getDetailsOfRecipe = async (req, res, next) => {
+
+    try {
         const requirements = req.params.recipeDetails.split(",")
         const FoodWeight = []
-        for(i=0;i<requirements.length;i++){
-            try{
-                const Ingredients = await FoodIngredients.find({ Ingredients_SpecialID: requirements[i].split(":")[0] })              
+        for (i = 0; i < requirements.length; i++) {
+            try {
+                const Ingredients = await FoodIngredients.find({ Ingredients_SpecialID: requirements[i].split(":")[0] })
                 const Ingredients_Name = Ingredients[0].Ingredients_Name //Malzeme Adı
                 const Ingredients_SubName = Ingredients[0].Ingredients_SubName //Malzeme'nin subname'i bu malzemeyi fonksiyonuna yolla
                 const Ingredients_Weight = Ingredients[0].Ingredients_Weight //Malzemenin Ağırlığı
                 const Ingredients_ID = Ingredients[0].Ingredients_ID //Malzeme ID
                 const Requirement_Weight = requirements[i].split(":")[2] // Gereken Ağırlık
-                FoodWeight.push(Ingredients_SubName+':'+Ingredients_ID+':'+Ingredients_Weight+':'+Requirement_Weight)
-                
+                FoodWeight.push(Ingredients_SubName + ':' + Ingredients_ID + ':' + Ingredients_Weight + ':' + Requirement_Weight)
+
             }
-            catch{               
-            }    
+            catch {
+            }
         }
         var suggestedProducts = [];
         console.log(FoodWeight)
-        for(i=0;i<(FoodWeight.length);i++){
-            var test = await Products.find({ $and: [{ product_name: {"$regex": FoodWeight[i].split(':')[0], $options: 'i' }},{category_id: Number(FoodWeight[i].split(':')[1]) }]}).lean()
+        for (i = 0; i < (FoodWeight.length); i++) {
+            var test = await Products.find({ $and: [{ product_name: { "$regex": FoodWeight[i].split(':')[0], $options: 'i' } }, { category_id: Number(FoodWeight[i].split(':')[1]) }] }).lean()
             var upperCasedProducts = priceCalculateModule.forToUpperCase(test);
-            suggestedProducts[i] = priceCalculateModule.getCostOfProduct(upperCasedProducts,FoodWeight[i].split(":")[3],FoodWeight[i].split(':')[2]).cheapestProduct
-            }
+            suggestedProducts[i] = priceCalculateModule.getCostOfProduct(upperCasedProducts, FoodWeight[i].split(":")[3], FoodWeight[i].split(':')[2]).cheapestProduct
+        }
         const totalprice = {
             TotalRecipePrice: priceCalculateModule.calculateTotalValueOfRecipe(suggestedProducts)
         }
@@ -72,20 +84,19 @@ const getDetailsOfRecipe = async(req,res,next)=>{
         res.json(suggestedProducts)
 
     }
-    catch(err){
-        console.log(err); 
+    catch (err) {
+        console.log(err);
     }
 
 }
 
 //yemek tariflerini çeker
-const getFoodRecipeList = async(req,res,next) =>
-{
+const getFoodRecipeList = async (req, res, next) => {
     const list = await foodRecipes.find({ active: "1" })
     res.json(list)
 }
 //malzeme listesini çeker
-const GetFoodIngredientsList = async (req,res,next) =>{
+const GetFoodIngredientsList = async (req, res, next) => {
     const list = await FoodIngredients.find({ Ingredients_Active: 1 })
     res.json(list)
 
@@ -100,7 +111,7 @@ const GetFoodIngredientsList = async (req,res,next) =>{
 
 
 //Get/test 
-const Test = async (req,res,next) => {
+const Test = async (req, res, next) => {
 }
 
 
@@ -110,22 +121,22 @@ const Test = async (req,res,next) => {
 
 
 const Login = async (req, res, next) => {
-    try{
+    try {
         const idpw = req.params.idpw.split(':')
         console.log(idpw)
     }
-    catch(err){
+    catch (err) {
         console.log(err)
     }
 
 };
 // POST
 const Register = async (req, res, next) => {
-    try{
+    try {
         const idpw = req.params.idpw.split(':')
         console.log(idpw)
     }
-    catch(err){
+    catch (err) {
         console.log(err)
     }
 
@@ -142,5 +153,6 @@ module.exports = {
     GetFoodIngredientsList,
     Test,
     getDetailsOfRecipe,
-    testLayout
+    homePage,
+    showDetailsOfRecipePage
 }
