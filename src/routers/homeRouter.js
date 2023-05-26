@@ -8,6 +8,8 @@ const { route } = require('./adminRouter');
 
 router.get('/',homeController.homePage)
 router.get('/tarif',homeController.showDetailsOfRecipePage)
+router.get('/login',homeController.showLoginPage)
+router.get('/register',homeController.showRegisterPage)
 router.get('/GET/:ProductName/:categoryId/:quantity', homeController.getProductsWithPrice);
 
 router.get('/GET/FoodIngredientsList',homeController.GetFoodIngredientsList)

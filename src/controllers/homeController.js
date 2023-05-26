@@ -30,6 +30,24 @@ const showDetailsOfRecipePage = async (req, res, next) => {
     }
   };
   
+const showLoginPage = async (req, res, next) => {
+    try {
+      
+      res.render('user/userLoginPage', { layout: '../layouts/User/userLoginLayout', title: `Giriş Yap`, description: ``, keywords: ``});
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+const showRegisterPage = async (req, res, next) => {
+    try {
+      
+      res.render('user/userRegisterPage', { layout: '../layouts/User/userLoginLayout', title: `Kayıt Ol`, description: ``, keywords: ``});
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
 
 // GET
 //birim fiyatı bul !
@@ -154,5 +172,7 @@ module.exports = {
     Test,
     getDetailsOfRecipe,
     homePage,
-    showDetailsOfRecipePage
+    showDetailsOfRecipePage,
+    showLoginPage,
+    showRegisterPage,
 }
