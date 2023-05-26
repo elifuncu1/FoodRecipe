@@ -37,8 +37,10 @@
     "node-fetch": "^3.2.6",
     "nodemailer": "^6.7.5",
     "nodemon": "^2.0.20",
+    "otplib": "^12.0.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "speakeasy": "^2.0.0",
     "tough-cookie": "^4.0.0",
     "tough-cookie-filestore2": "^1.0.0"
   }

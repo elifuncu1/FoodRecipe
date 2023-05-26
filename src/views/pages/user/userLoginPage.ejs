@@ -7,15 +7,15 @@
                 </div>
             </div>
         </div>
-        <form action="#">
+        <form class="pt-3"  action="/login" method="post">
             <div class="row" style="justify-content: center;">
                 <div class="col-lg-6">
-                    <input type="text"  placeholder="Kullanıcı Adı">
+                    <input type="text" name="kullaniciAdi" id="kullaniciAdi" placeholder="Kullanıcı Adı">
                 </div>
             </div>
             <div class="row" style="justify-content: center;">
                 <div class="col-lg-6">
-                    <input type="text" placeholder="Şifre">
+                    <input type="text" name="sifre" id="sifre"  placeholder="Şifre">
                 </div>
             </div>
             <div class="row" style="justify-content: center;">
@@ -23,6 +23,9 @@
                     <button type="submit" class="site-btn">Giriş Yap</button>
                 </div>
             </div>
+            <% if (locals.validation_error != undefined || locals.success_message != undefined || locals.login_error != undefined) { %>
+                <%- include('../../partials/_mesaj') %> 
+             <% } %>
         </form>
     </div>
 </div>

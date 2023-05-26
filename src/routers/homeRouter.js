@@ -8,9 +8,8 @@ const { route } = require('./adminRouter');
 
 router.get('/',homeController.homePage)
 router.get('/tarif',homeController.showDetailsOfRecipePage)
-router.get('/login',homeController.showLoginPage)
-router.get('/register',homeController.showRegisterPage)
 router.get('/GET/:ProductName/:categoryId/:quantity', homeController.getProductsWithPrice);
+//router.get('/register',homeController.showRegisterPage)
 
 router.get('/GET/FoodIngredientsList',homeController.GetFoodIngredientsList)
 router.get('/GET/FoodRecipeList',homeController.getFoodRecipeList)
@@ -19,8 +18,6 @@ router.get('/GET/FoodRecipeList',homeController.getFoodRecipeList)
 
 
 router.get('/GET/test', homeController.Test);
-router.get('/login/:idpw',homeController.Login)
-router.get('/register/:informations',homeController.Register)
 //Post
 
 router.post('/GET/DetailsOfRecipe',homeController.getDetailsOfRecipe)

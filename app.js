@@ -3,19 +3,23 @@ const express = require('express')
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
+const MongoDBStore = require('connect-mongodb-session')(session);
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 
+require('dotenv').config();
+
+
 const app = express()
-const port = '9988'
+const port = process.env.PORT;
+
 // DB Connect
 require('./src/config/config');
+
 // Router Settings
 const homeRouter = require('./src/routers/homeRouter');
-const adminRouter = require('./src/routers/adminRouter');
 const authRouter = require('./src/routers/authRouter');
-
 
 // Middleware (Gelen değerleri okumak)
 app.use(express.urlencoded({ extended: true }));
@@ -41,6 +45,41 @@ app.set('views', path.resolve(__dirname, './src/views/pages'));
 
 // Session & Flash Message
 
+const sessionStore = new MongoDBStore({
+    uri: process.env.MONGODB_CONNECTION_STRING,
+    collection: 'Sessions'
+  });
+  
+
+  app.use(cookieParser());
+
+
+app.use(session(
+    {
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24
+        },
+        store:sessionStore
+    }
+));
+app.use(flash());
+app.use((req, res, next) => {
+    res.locals.validation_error = req.flash('validation_error');
+    res.locals.iUserlogin_error = req.flash('iUserlogin_error');
+    res.locals.success_message = req.flash('success_message');
+    res.locals.email = req.flash('email');
+    res.locals.ad = req.flash('ad');
+    res.locals.soyad = req.flash('soyad');
+    res.locals.login_error = req.flash('error');
+    next();
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 
 app.use(function(req, res, next) {
@@ -52,10 +91,7 @@ app.use(function(req, res, next) {
 
 
 
-app.use('/', homeRouter);
-
-app.use('/izzycode', adminRouter);
-
+app.use('/', homeRouter,authRouter);
 
 app.use((req, res) => {
     res.status(404).redirect('/')
