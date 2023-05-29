@@ -54,7 +54,7 @@ const login = async (req, res, next) => {
           const Username = await User.findOne({kullaniciAdi : req.body.kullaniciAdi});
           console.log(Username)
           res.clearCookie('loggedUser');  
-          res.cookie('loggedUser', Username.kullaniciAdi, { expires: new Date(Date.now() + 900000000) });
+          res.cookie('loggedUser', Username.User_ID, { expires: new Date(Date.now() + 900000000) });
       }
       catch{
           console.log('User Not Found')
@@ -75,6 +75,7 @@ const logout = (req, res, next) => {
 
     req.session.destroy((error) => {
         res.clearCookie('connect.sid');
+        res.clearCookie('loggedUser')
         res.redirect('/login')
         //res.redirect('/yonetim/login');
     });

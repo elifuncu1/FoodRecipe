@@ -6,6 +6,9 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 
 router.get('/login', authMiddleware.oturumAcilmamis, authController.showLoginForm)
+router.get('/logout', authMiddleware.oturumAcilmis, authController.logout)
+
+
 
 router.post('/login', authMiddleware.oturumAcilmamis, validetorMiddleware.validateLogin(), authController.login)
 
