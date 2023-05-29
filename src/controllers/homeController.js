@@ -1,8 +1,11 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const Products = require('../models/products');
 const FoodIngredients = require('../models/foodIngredients');
 const foodRecipes = require('../models/foodRecipe');
+const User = require('../models/userModel');
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 const { find } = require('../models/products');
 const { json } = require('body-parser');
 var priceCalculateModule = require("./BusinessModules/ProductModules/priceCalculateModule");//Modülden çalışmaya devamke unutmuyoruz "DRY"
@@ -21,33 +24,33 @@ const homePage = async (req, res, next) => {
 }
 const showDetailsOfRecipePage = async (req, res, next) => {
     try {
-      const selectedRecipe = await foodRecipes.findOne({ active: "1" });
-      
-      const foodIngredientsList = await splitModule.splitIngredients(selectedRecipe)
-      res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: ``, selectedRecipe,foodIngredientsList});
+        const selectedRecipe = await foodRecipes.findOne({ active: "1" });
+
+        const foodIngredientsList = await splitModule.splitIngredients(selectedRecipe)
+        res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: ``, selectedRecipe, foodIngredientsList });
     } catch (err) {
-      console.log(err);
+        console.log(err);
     }
-  };
-  
+};
+
 const showLoginPage = async (req, res, next) => {
     try {
-      
-      res.render('user/userLoginPage', { layout: '../layouts/User/userLoginLayout', title: `Giriş Yap`, description: ``, keywords: ``});
+
+        res.render('user/userLoginPage', { layout: '../layouts/User/userLoginLayout', title: `Giriş Yap`, description: ``, keywords: `` });
     } catch (err) {
-      console.log(err);
+        console.log(err);
     }
-  };
-  
+};
+
 const showRegisterPage = async (req, res, next) => {
     try {
-      
-      res.render('user/userRegisterPage', { layout: '../layouts/User/userLoginLayout', title: `Kayıt Ol`, description: ``, keywords: ``});
+
+        res.render('user/userRegisterPage', { layout: '../layouts/User/userLoginLayout', title: `Kayıt Ol`, description: ``, keywords: `` });
     } catch (err) {
-      console.log(err);
+        console.log(err);
     }
-  };
-  
+};
+
 
 // GET
 //birim fiyatı bul !
@@ -148,17 +151,38 @@ const Login = async (req, res, next) => {
     }
 
 };
-// POST
+
+// User
 const Register = async (req, res, next) => {
     try {
-        const idpw = req.params.idpw.split(':')
-        console.log(idpw)
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(req.body.sifre, saltRounds);
+      const uniqueId = uuidv4();
+      const informations = {
+        kullaniciAdi: req.body.kullaniciAdi,
+        sifre: passwordHash,
+        Email: req.body.email,
+        nameSurname: req.body.nameSurname,
+        User_ID: uniqueId,
+      };
+      const password = req.body.sifre;
+  
+      bcrypt.hash(password, saltRounds, async (err, hash) => {
+        if (err) {
+          console.log("Hashleme hatası", err);
+        } else {
+          const newUser = new User(informations);
+          await newUser.save();
+          res.redirect("../"); 
+          console.log(req.body.kullaniciAdi + " başarıyla veritabanına eklendi.");
+        }
+      });
+    } catch (err) {
+      console.log(err);
     }
-    catch (err) {
-        console.log(err)
-    }
+  };
+  
 
-};
 
 
 // Buraya Post atmamız gereken şeyleri yazalım
