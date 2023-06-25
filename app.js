@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 
-require('dotenv').config();
+
 
 
 const app = express()
@@ -17,9 +17,12 @@ const port = process.env.PORT;
 // DB Connect
 require('./src/config/config');
 
+
 // Router Settings
 const homeRouter = require('./src/routers/homeRouter');
+const adminRouter = require('./src/routers/adminRouter');
 const authRouter = require('./src/routers/authRouter');
+
 
 // Middleware (Gelen değerleri okumak)
 app.use(express.urlencoded({ extended: true }));
@@ -36,12 +39,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Template Engine Settings
 const ejs = require('ejs');
 const expressLayouts = require('express-ejs-layouts');
+
 const path = require('path');
+
 app.use(expressLayouts);
 app.use(express.static('public'));
-app.use('/uploads', express.static(path.join(__dirname,'/src/uploads')));
+app.use('/uploads', express.static(path.join(__dirname,'./src/uploads/images')));
 app.set('view engine', 'ejs');
 app.set('views', path.resolve(__dirname, './src/views/pages'));
+app.use( express.static( "./src/views/pages/user" ) );
+app.use( express.static( "./src/views/pages/admin" ) );
+app.use( express.static( "./src/views/pages/partials" ) );
 
 // Session & Flash Message
 
@@ -49,6 +57,7 @@ const sessionStore = new MongoDBStore({
     uri: process.env.MONGODB_CONNECTION_STRING,
     collection: 'Sessions'
   });
+
   
 
   app.use(cookieParser());
@@ -68,7 +77,7 @@ app.use(session(
 app.use(flash());
 app.use((req, res, next) => {
     res.locals.validation_error = req.flash('validation_error');
-    res.locals.iUserlogin_error = req.flash('iUserlogin_error');
+    res.locals.tUserlogin_error = req.flash('tUserlogin_error');
     res.locals.success_message = req.flash('success_message');
     res.locals.email = req.flash('email');
     res.locals.ad = req.flash('ad');
@@ -76,7 +85,6 @@ app.use((req, res, next) => {
     res.locals.login_error = req.flash('error');
     next();
 });
-
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -92,9 +100,10 @@ app.use(function(req, res, next) {
 
 
 app.use('/', homeRouter,authRouter);
+app.use('/izzycodes', authRouter, adminRouter);
 
 app.use((req, res) => {
     res.status(404).redirect('/')
 });
 
-app.listen(port,() => console.log(`Example app listening on port ${port}!`))
+app.listen(port,() => console.log(`Firat listening on port ${port}!`))

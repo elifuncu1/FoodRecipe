@@ -2,7 +2,7 @@ const FoodIngredients = require('../models/foodIngredients');
 const foodRecipes = require('../models/foodRecipe');
 const ids = require('../models/ids');
 const fs = require('fs');
-
+const { v4: uuidv4 } = require('uuid');
 const showHomePage = async (req, res, next) => {
 
     try {
@@ -54,7 +54,7 @@ const postFoodIngredients = async (req,res,next) => {
             Ingredients_MainCategory: req.body.topic,
             Ingredients_SubCategory: req.body.chapter,
             Ingredients_Type: req.body.typeofIngredients,
-            Ingredients_ID: req.body.product_id,
+            Ingredients_ID: uuidv4(),
             Ingredients_SubName: req.body.product_subname,
             Ingredients_Weight: req.body.product_weight,
             Ingredients_Note: req.body.product_description,
@@ -85,11 +85,12 @@ const postfoodRecipe = async (req,res,next) => {
 
             Recipe_Name: req.body.product_name,
             Recipe_Description: req.body.product_description,
-            Recipe_Ingredients: req.body.food_Ingredients,
+            Recipe_Ingredients: [],
             Recipe_photo: req.file.filename,
             Ingredients_Active: "1"
 
         }
+        
         const newProduct = new foodRecipes(
             informations,
             
