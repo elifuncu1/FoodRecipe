@@ -8,10 +8,9 @@ const splitIngredients = async function (selectedRecipe) {
 
     for (const item of veriArray) {
       const [urunAdi] = item.split(':');
-
-      const eşleşenUrun = await FoodIngredientsModel.find({ Ingredients_Name: urunAdi });
-      if (eşleşenUrun.length > 0) {
-        urunler.push(...eşleşenUrun);
+      const eslesenUrun = await FoodIngredientsModel.find({ Ingredients_Name: urunAdi });
+      if (eslesenUrun.length > 0) {
+        urunler.push(...eslesenUrun);
       }
     }
 

@@ -22,7 +22,7 @@ const homePage = async (req, res, next) => {
         console.log(err)
     }
 }
-const showDetailsOfRecipePage = async (req, res, next) => {
+const showDetailsOfRecipePage1 = async (req, res, next) => {
     try {
         const selectedRecipe = await foodRecipes.findOne({ active: "1" });
 
@@ -31,6 +31,33 @@ const showDetailsOfRecipePage = async (req, res, next) => {
     } catch (err) {
         console.log(err);
     }
+};
+const showDetailsOfRecipePage = async (req, res, next) => {
+    try {
+        var ProductsList = []
+        const findRecipes = await foodRecipes.findOne({Recipe_Name: req.params.recipeName})
+        
+        const ProductList = findRecipes.Recipe_Ingredients.split(',')
+        for(let i = 0;i<ProductList.length;i++){
+            const words = ProductList[i].split(':')[0].split(' ')
+            const lastWord = words[words.length - 1];
+            const FoodFind = await Products.find({product_name:  { "$regex": lastWord, $options: 'i' }})
+            var info = {
+
+                FoodName: ProductList[i].split(':')[0],
+                productList: FoodFind,
+                wantedQuantity: ProductList[i].split(':')[2],
+                x: ProductList[i].split(':')[1]
+            }
+            ProductsList.push(priceCalculateModule.getCostOfProduct(info.productList,info.wantedQuantity,info.x))     
+
+        }
+        res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: ``, selectedRecipe, foodIngredientsList,ProductsList });
+    } catch (err) {
+        console.log(err);
+    }
+
+
 };
 
 const showLoginPage = async (req, res, next) => {
