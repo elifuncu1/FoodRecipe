@@ -1,6 +1,7 @@
 const FoodIngredients = require('../models/foodIngredients');
 const foodRecipes = require('../models/foodRecipe');
 const ids = require('../models/ids');
+const ProductCategories = require('../models/productCategoryModel');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const showHomePage = async (req, res, next) => {
@@ -16,8 +17,9 @@ const showHomePage = async (req, res, next) => {
     }
 };
 const showProductPage = async (req,res,next) => {
-    try{
-        res.render('admin/addproduct',{ layout: '../layouts/free', title: `Product ADD`, description: ``, keywords: `` })
+    try{ 
+        const categories = await ProductCategories.find();
+        res.render('admin/addproduct',{ layout: '../layouts/free', title: `Product ADD`, description: ``, keywords: ``,categories })
     }
     catch(err){
         console.log(err)
@@ -25,17 +27,11 @@ const showProductPage = async (req,res,next) => {
 }
 const showRecipePage = async (req,res,next) => {
     try{
-        const FoodIngredient = await FoodIngredients.find({active: "1"})
-        
-        const NameAndIds = [] 
-        const IngredientNames = []
+        const ingredients = await FoodIngredients.find({active: "1"})
+        const categories = await ProductCategories.find();
 
-        for( let index = 0; index < FoodIngredient.length; index++ ) { 
-            NameAndIds.push(FoodIngredient[index].Ingredients_Name+':'+FoodIngredient[index].Ingredients_ID)
-            IngredientNames.push(FoodIngredient[index].Ingredients_Name)
 
-        } 
-        res.render('admin/addFoodRecipe',{ layout: '../layouts/free', title: `Product ADD`, description: ``, keywords: ``,IngredientNames,NameAndIds  })
+        res.render('admin/addFoodRecipe',{ layout: '../layouts/adminHome_Layout', title: `Product ADD`, description: ``, keywords: ``,ingredients })
     }
     
     catch(err){

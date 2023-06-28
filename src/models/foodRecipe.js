@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const UserSchema = new Schema({
+
+const RecipeSchema = new Schema({
     Recipe_Name: {
         type: String,
         trim: true
@@ -10,8 +11,12 @@ const UserSchema = new Schema({
         trim: true
     },
     Recipe_Ingredients: {
-        type: String,
-        trim: true
+        type: [{
+            name: String,
+            weight : Number,
+            unit: String,
+            category : String
+        }]
     },
     Recipe_photo: {
         type: String,
@@ -23,21 +28,24 @@ const UserSchema = new Schema({
     Recipe_Video: {
         type: String
     },
-    Recipe_Like:{
+    Recipe_Like: {
         type: Number
     },
-    Recipe_UnLike:{
+    Recipe_UnLike: {
         type: Number
     },
-    Recipe_Price:{
+    Recipe_Price: {
         type: Number
     },
-    Recipe_Owner:{
+    Recipe_Owner: {
         type: String
-    },
-    
-}, { collection: 'foodRecipes',locale: 'tr', timestamps: true });
+    }
+}, { 
+    collection: 'foodRecipes',
+    locale: 'tr',
+    timestamps: true 
+});
 
-const Admin = mongoose.model('foodRecipes', UserSchema);
+const Recipe = mongoose.model('Recipe', RecipeSchema);
 
-module.exports = Admin;
+module.exports = Recipe;

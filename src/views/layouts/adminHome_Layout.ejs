@@ -1,93 +1,323 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <title><%- title %> </title>
-  <link rel="stylesheet" href="/admin/assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/admin/assets/css/styles.min.css">
-  <style>
-      table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
+    <meta charset="UTF-8">
+    <meta name="description" content="Ogani Template">
+    <meta name="keywords" content="Ogani, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%- title %></title>
+    <!-- Google Font -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="/user/assets/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/user/assets/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/user/assets/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/user/assets/css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="/user/assets/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/user/assets/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/user/assets/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/user/assets/css/style.css" type="text/css">
+    <style>
+        .account-dropdown {
+    position: relative;
+    display: inline-block;
 }
 
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
+.account-btn {
+    background-color: #fff;
+    color: #333;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
 }
 
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-/* Style the tab */
-.tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-/* Style the buttons inside the tab */
-.tab button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
+.account-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    padding: 0;
+    list-style: none;
 }
 
-/* Change background color of buttons on hover */
-.tab button:hover {
-  background-color: #ddd;
+.account-dropdown-menu li {
+    padding: 10px;
 }
 
-/* Create an active/current tablink class */
-.tab button.active {
-  background-color: #ccc;
+.account-dropdown-menu li a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    transition: color 0.3s;
 }
 
-/* Style the tab content */
-.tabcontent {
-  display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
+.account-dropdown-menu li a:hover {
+    color: #ff0000;
 }
-  </style>
+
+    </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-dark navbar-expand-md bg-dark py-3">
-        <div class="container"><a class="navbar-brand d-flex align-items-center" href="#"><span
-              class="bs-icon-sm bs-icon-rounded bs-icon-primary d-flex justify-content-center align-items-center me-2 bs-icon"><svg
-                xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16"
-                class="bi bi-bezier">
-                <path fill-rule="evenodd"
-                  d="M0 10.5A1.5 1.5 0 0 1 1.5 9h1A1.5 1.5 0 0 1 4 10.5v1A1.5 1.5 0 0 1 2.5 13h-1A1.5 1.5 0 0 1 0 11.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zm10.5.5A1.5 1.5 0 0 1 13.5 9h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM6 4.5A1.5 1.5 0 0 1 7.5 3h1A1.5 1.5 0 0 1 10 4.5v1A1.5 1.5 0 0 1 8.5 7h-1A1.5 1.5 0 0 1 6 5.5v-1zM7.5 4a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1z">
-                </path>
-                <path
-                  d="M6 4.5H1.866a1 1 0 1 0 0 1h2.668A6.517 6.517 0 0 0 1.814 9H2.5c.123 0 .244.015.358.043a5.517 5.517 0 0 1 3.185-3.185A1.503 1.503 0 0 1 6 5.5v-1zm3.957 1.358A1.5 1.5 0 0 0 10 5.5v-1h4.134a1 1 0 1 1 0 1h-2.668a6.517 6.517 0 0 1 2.72 3.5H13.5c-.123 0-.243.015-.358.043a5.517 5.517 0 0 0-3.185-3.185z">
-                </path>
-              </svg></span><span>Instagram Panel</span></a><button data-bs-toggle="collapse" class="navbar-toggler"
-            data-bs-target="#navcol-5"><span class="visually-hidden">Toggle navigation</span><span
-              class="navbar-toggler-icon"></span></button>
-          <div class="collapse navbar-collapse" id="navcol-5">
-            <ul class="navbar-nav ms-auto">
-              <li class="nav-item"><a class="nav-link" href="/cycode">Anasayfa</a></li>
-              <li class="nav-item"><a class="nav-link" href="/cycode/actions">Actions</a></li>
-            </ul><a class="btn btn-primary ms-md-2" href="/cycode/logout">Çıkış</a>
-          </div>
-        </div>
-      </nav>
-    <%- body %> 
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Humberger Begin -->
+    <div class="humberger__menu__overlay"></div>
+    <div class="humberger__menu__wrapper">
+        <div class="humberger__menu__logo">
+            <a href="#"><img src="/home/img/LogoMin.png" alt="" style="width: 200px; height: 100px;"></a>
+        </div>
+        <div class="humberger__menu__cart">
+            <ul>
+                <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
+                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+            </ul>
+            <div class="header__cart__price">item: <span>$150.00</span></div>
+        </div>
+
+        <nav class="humberger__menu__nav mobile-menu">
+            <ul>
+                <li class="active"><a href="./index.html">Home</a></li>
+                <li><a href="./shop-grid.html">Shop</a></li>
+                <li><a href="#">Pages</a>
+                    <ul class="header__menu__dropdown">
+                        <li><a href="./shop-details.html">Shop Details</a></li>
+                        <li><a href="./shoping-cart.html">Shoping Cart</a></li>
+                        <li><a href="./checkout.html">Check Out</a></li>
+                        <li><a href="./blog-details.html">Blog Details</a></li>
+                    </ul>
+                </li>
+                <li><a href="./blog.html">Blog</a></li>
+                <li><a href="./contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        <div id="mobile-menu-wrap"></div>
+        <div class="header__top__right__social">
+            <a href="#"><i class="fa fa-facebook"></i></a>
+            <a href="#"><i class="fa fa-twitter"></i></a>
+            <a href="#"><i class="fa fa-linkedin"></i></a>
+            <a href="#"><i class="fa fa-pinterest-p"></i></a>
+        </div>
+        <div class="humberger__menu__contact">
+            <ul>
+                <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
+                <li>Free Shipping for all Order of $99</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Humberger End -->
+
+    <!-- Header Section Begin -->
+    <header class="header">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="header__logo">
+                        <a href="./index.html"><img src="/home/img/LogoMin.jpeg" alt=""
+                                style="width: 260px; height: 89px;"></a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <nav class="header__menu">
+                        <ul>
+                            <li class="active"><a href="./index.html">Home</a></li>
+                            <li><a href="./shop-grid.html">Shop</a></li>
+                            <li><a href="#">Pages</a>
+                                <ul class="header__menu__dropdown">
+                                    <li><a href="./shop-details.html">Shop Details</a></li>
+                                    <li><a href="./shoping-cart.html">Shoping Cart</a></li>
+                                    <li><a href="./checkout.html">Check Out</a></li>
+                                    <li><a href="./blog-details.html">Blog Details</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="./blog.html">Blog</a></li>
+                            <li><a href="./contact.html">Contact</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3" id="authButtons">
+                    <div class="header__cart">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <a href="/login">
+                                    <button class="btn btn-outline-danger btn-block">Giriş Yap</button>
+                                </a>
+                            </div>
+                            <div class="col-lg-6">
+                                <a href="/register">
+                                    <button class="btn btn-outline-danger btn-block">Kayıt Ol</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3" id="accountDropdown" style="display: none;">
+                    <div class="header__cart">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="account-dropdown">
+                                    <button class="account-btn">Hesabım <i class="fa fa-chevron-down"></i></button>
+                                    <ul class="account-dropdown-menu">
+                                        <li><a href="/profil-duzenle">Profilini Düzenle</a></li>
+                                        <li><a href="/logout">Çıkış Yap</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+            <div class="humberger__open">
+                <i class="fa fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+    <%- body %>
+
+        <!-- Footer Section Begin -->
+        <footer class="footer spad">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="footer__about">
+                            <div class="footer__about__logo">
+                                <a href="./index.html"><img src="/home/img/LogoMin.jpeg" alt=""></a>
+                            </div>
+                            <ul>
+                                <li>Address: 60-49 Road 11378 New York</li>
+                                <li>Phone: +65 11.188.888</li>
+                                <li>Email: hello@colorlib.com</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
+                        <div class="footer__widget">
+                            <h6>Useful Links</h6>
+                            <ul>
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">About Our Shop</a></li>
+                                <li><a href="#">Secure Shopping</a></li>
+                                <li><a href="#">Delivery infomation</a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Our Sitemap</a></li>
+                            </ul>
+                            <ul>
+                                <li><a href="#">Who We Are</a></li>
+                                <li><a href="#">Our Services</a></li>
+                                <li><a href="#">Projects</a></li>
+                                <li><a href="#">Contact</a></li>
+                                <li><a href="#">Innovation</a></li>
+                                <li><a href="#">Testimonials</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12">
+                        <div class="footer__widget">
+                            <h6>Join Our Newsletter Now</h6>
+                            <p>Get E-mail updates about our latest shop and special offers.</p>
+                            <form action="#">
+                                <input type="text" placeholder="Enter your mail">
+                                <button type="submit" class="site-btn">Subscribe</button>
+                            </form>
+                            <div class="footer__widget__social">
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-instagram"></i></a>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="#"><i class="fa fa-pinterest"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="footer__copyright">
+                            <div class="footer__copyright__text">
+                                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                    Copyright &copy;
+                                    <script>document.write(new Date().getFullYear());</script> All rights reserved |
+                                    This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a
+                                        href="https://colorlib.com" target="_blank">Colorlib</a>
+                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                </p>
+                            </div>
+                            <div class="footer__copyright__payment"><img src="/user/assets/img/payment-item.png" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer Section End -->
+        <!-- Js Plugins -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="/user/assets/js/jquery.nice-select.min.js"></script>
+        <script src="/user/assets/js/jquery-ui.min.js"></script>
+        <script src="/user/assets/js/jquery.slicknav.js"></script>
+        <script src="/user/assets/js/mixitup.min.js"></script>
+        <script src="/user/assets/js/owl.carousel.min.js"></script>
+        <script src="/user/assets/js/main.js"></script>
+
+        <script>
+            // Cookie kontrolü yapılması
+            const authButtons = document.getElementById("authButtons");
+            const accountButton = document.getElementById("accountButton");
+            const loginButton = document.getElementById("loginButton");
+            const registerButton = document.getElementById("registerButton");
+            const accountDropdown = document.getElementById("accountDropdown");
+            const loggedUserCookie = getCookie("loggedUser");
+
+            if (loggedUserCookie) {
+                authButtons.style.display = "none";
+                accountDropdown.style.display = "block";
+            } else {
+                authButtons.style.display = "block";
+                accountDropdown.style.display = "none";
+            }
+
+            // Cookie değerini almak için yardımcı bir fonksiyon
+            function getCookie(name) {
+                const cookieValue = document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)");
+                return cookieValue ? cookieValue.pop() : "";
+            }
+            $(document).ready(function () {
+                $('.account-btn').click(function () {
+                    $('.account-dropdown-menu').toggle();
+                });
+
+                $(document).on('click', function (event) {
+                    if (!$(event.target).closest('.account-dropdown').length) {
+                        $('.account-dropdown-menu').hide();
+                    }
+                });
+            });
+        </script>
+
+
+
+
+
+
+
 </body>
 
 </html>
