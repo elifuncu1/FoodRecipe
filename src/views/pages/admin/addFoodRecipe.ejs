@@ -1,118 +1,246 @@
-<title><%-title  %> </title>
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    
-<!------ Include the above in your HEAD tag ---------->
-<body style="background-color: #1B2430;">
-<form action="/izzycode/postfoodRecipe" method="post" enctype="multipart/form-data" class="form-horizontal">
-<fieldset>
+<!DOCTYPE html>
+<html>
 
-<!-- Form Name -->
-<legend style="color: white;">Yemek Tarifi</legend>
+<head>
+  <title>Yemek Tarifi Ekle</title>
+  <style>
+    body {
+      background-color: #f9f9f9;
+      color: #333333;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-<!-- Text input-->
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
+    }
 
-<!-- Text input-->
-<div class="form-group">
-  <label style="color: white;" class="col-md-4 control-label" for="product_name">Yemek Tarifi Adı</label>  
-  <div class="col-md-4">
-  <input style="background-color: black;color:white" id="product_name" name="product_name" placeholder="Ürün Adı" class="form-control input-md" required="" type="text">
-    
-  </div>
-</div>
-<!-- Select Basic -->
-<div class="form-group">
-  <label style="color: white;" class="col-md-4 control-label" for="product_categorie">Ürün Kategorisi</label>
-  <div class="col-md-4">
-    <form name="form1" id="form1" action="/action_page.php">
-      <select class="selectpicker" multiple title="Pick your condiments" data-live-search="true">
-          <% IngredientNames.forEach(element => { %>
-            <option value="<%-element%>"><%-element%> </option>
-          <% }) %>
+    h1 {
+      color: #ff0000;
+      font-size: 24px;
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #ff0000;
+    }
+
+    .form-group input[type="text"],
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+    }
+
+    .form-group input[type="submit"] {
+      background-color: #ff0000;
+      color: #ffffff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .form-group input[type="submit"]:hover {
+      background-color: #cc0000;
+    }
+
+    .ingredient-container {
+      margin-bottom: 10px;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      border: 1px solid #cccccc;
+      text-align: left;
+    }
+
+    .preview-image {
+      max-width: 200px;
+      max-height: 200px;
+      margin-right: 10px;
+    }
+
+    .error-message {
+      color: #ff0000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Yemek Tarifi Ekle</h1>
+
+    <form id="ingredient-form">
+      <div class="form-group">
+        <label for="ingredient-select">İçerikler Seçimi:</label>
+        <select id="ingredient-select" multiple required>
+          <% for (let i = 0; i < ingredients.length; i++) { %>
+          <option value="<%= JSON.stringify(ingredients[i]) %>">
+            <%= ingredients[i].Ingredients_Name %>
+          </option>
+          <% } %>
         </select>
-      </form>
-    </div>
-  </div>
-</div>
-<div class="form-group">
-  <label style="color: white;" class="col-md-4 control-label" for="product_description">Yemek Malzemeleri</label>
-  <div class="col-md-4">                     
-    <textarea style="background-color: black;color:white" class="form-control" id="food_Ingredients" placeholder="Not eklemek isterseniz ekleyiniz." name="food_Ingredients"></textarea>
-  </div>
-</div>
-<!-- Textarea -->
-<!-- Text input-->
-<div class="form-group">
-  <label style="color: white;" class="col-md-4 control-label" for="product_description">Yemek Açıklaması</label>
-  <div class="col-md-4">                     
-    <textarea style="background-color: black;color:white" class="form-control" id="product_description" placeholder="Not eklemek isterseniz ekleyiniz." name="product_description"></textarea>
-  </div>
-</div>
- <!-- File Button --> 
-<div class="form-group">
-  <label style="color: white;" class="col-md-4 control-label" for="files">Malzeme Fotoğrafı</label>
-  <div class="col-md-4">  
-    <input style="background-color: black;color:white" id="image" name="image" class="input-files" type="file">    
-  </div>
-</div>
+      </div>
 
+      <div class="form-group">
+        <label for="ingredient-quantity">Miktar: <span class="error-message">*</span></label>
+        <input type="number" id="ingredient-quantity" required min="1">
+      </div>
+      <div class="form-group">
+        <input type="button" id="add-ingredient" value="Tamam">
+      </div>
+      <h2>Seçilen İçerikler:</h2>
+      <table id="selected-ingredients-table">
+        <thead>
+          <tr>
+            <th>İçerikler</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
 
-<!-- Button -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="singlebutton" ></label>
-  <div class="col-md-4">
-    <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary">Yükle</button>
-    <img height="80" width="80" id="blah0" src="#" alt="your image"/>
-  </div>
+    </form>
+
+    <form action="/izzycodes/postfoodRecipe" method="post" enctype="multipart/form-data" id="recipe-form">
+      <div class="form-group">
+        <label for="product_name">Yemek Tarifi Adı:</label>
+        <input id="product_name" name="product_name" placeholder="Ürün Adı" class="form-control input-md" required
+          type="text">
+      </div>
+      <div class="form-group">
+        <label for="recipeCategory">Kategori:</label>
+        <select id="recipeCategory" name="recipeCategory">
+          <% for (let i = 0; i < categories.length; i++) { %>
+          <option value="<%= categories[i].name %>">
+            <%= categories[i].name %>
+          </option>
+          <% } %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="product_description">Yemek Açıklaması:</label>
+        <textarea class="form-control" id="product_description" placeholder="Not eklemek isterseniz ekleyiniz."
+          name="product_description"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="video">Yemek videosu</label>
+        <textarea class="form-control" id="video" placeholder="Yemek Videosunu youtubeden İframe olarak yükleyiniz"
+          name="video"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="photos">Fotoğraf Seçin:</label>
+        <input type="file" id="photos" name="photos" accept="image/*" multiple>
+      </div>
+
+      <div class="form-group">
+        <input type="hidden" name="foodIngredients" id="foodIngredients">
+        <input type="submit" value="Gönder">
+      </div>
+    </form>
   </div>
 
-<script>
-   $(document).ready(function(){
-        $("#images").change(function(){
-          
-            $("#blah").show();
-        });
+  <script>
+    const ingredientSelect = document.getElementById('ingredient-select');
+    const ingredientQuantityInput = document.getElementById('ingredient-quantity');
+    const addIngredientButton = document.getElementById('add-ingredient');
+    const selectedIngredientsTableBody = document.querySelector('#selected-ingredients-table tbody');
+    const previewContainer = document.getElementById('preview-container');
+    const foodIngredientsInput = document.getElementById('foodIngredients');
+    const recipeForm = document.getElementById('recipe-form');
+    let foodIngredients = []; // İçerikleri tutacak dizi
+
+    addIngredientButton.addEventListener('click', function () {
+      const selectedOptions = Array.from(ingredientSelect.selectedOptions);
+      const ingredientQuantity = ingredientQuantityInput.value;
+
+      if (!ingredientQuantity) {
+        alert('Miktar alanı boş bırakılamaz!');
+        return;
+      }
+
+      selectedOptions.forEach(function (option) {
+        const ingredientData = JSON.parse(option.value);
+        const quantity = ingredientQuantity;
+
+        const combinedData = {
+          "Ingredients_Name": ingredientData.Ingredients_Name,
+          "Ingredients_Weight": ingredientData.Ingredients_Weight * quantity,
+          "Ingredients_SubName": ingredientData.Ingredients_SubName,
+          "Ingredients_SubCategory": ingredientData.Ingredients_SubCategory,
+          "quantity": quantity
+        };
+
+        foodIngredients.push(combinedData);
+        console.log(foodIngredients);
+
+        const row = document.createElement('tr');
+        const jsonCell = document.createElement('td');
+        jsonCell.textContent = JSON.stringify(combinedData);
+        row.appendChild(jsonCell);
+
+        selectedIngredientsTableBody.appendChild(row);
+      });
+
+      ingredientQuantityInput.value = '';
     });
 
+    function createPreviewImage(file) {
+      const reader = new FileReader();
 
-</script>
+      reader.onload = function (event) {
+        const img = document.createElement('img');
+        img.setAttribute('src', event.target.result);
+        img.setAttribute('class', 'preview-image');
+        previewContainer.appendChild(img);
+      };
 
-
-
-
-</fieldset>
-</form>
-</body>
-<script>
-  images.onchange = evt => {
-  var $div = $('img[id^="blah"]:last');
-
-  // Read the Number from that DIV's ID (i.e: 3 from "klon3")
-  // And increment that number by 1
-  var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) +1;
-
-  // Clone it and assign the new ID (i.e: from num 4 to ID "klon4")
-  var $klon = $div.clone().prop('id', 'blah'+num );
-
-  // Finally insert $klon wherever you want
-  $div.after( $klon.text('klon'+num) );
-  const [file] = images.files
-  if (file) {
-    for(let i = 0;i<images.files.length;i++){
-      $(`#blah${i}`).attr("src",URL.createObjectURL(images.files[i]));    
+      reader.readAsDataURL(file);
     }
-  }
-}
-</script>
-<script>
-const array = "<%-NameAndIds%>"
-const selectElement = document.querySelector('.selectpicker');
 
-selectElement.addEventListener('change', (event) => {
-  const result = document.querySelector('.result');
-  const id = array.split(event.target.value+':')[1].split(',')[0];
-  console.log(array.split(event.target.value+':')[1].split(',')[0])
-  $('#food_Ingredients').val($('#food_Ingredients').val() + event.target.value+':'+id+':'+',');
-});
-</script>
+    recipeForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const photosInput = document.getElementById('photos');
+      const photos = photosInput.files;
+
+      for (let i = 0; i < photos.length; i++) {
+        console.log('Fotoğraf Adı:', photos[i].name);
+        console.log('Fotoğraf Boyutu:', photos[i].size);
+
+        createPreviewImage(photos[i]);
+      }
+
+      foodIngredientsInput.value = JSON.stringify(foodIngredients);
+
+      recipeForm.submit();
+    });
+  </script>
+</body>
+
+</html>

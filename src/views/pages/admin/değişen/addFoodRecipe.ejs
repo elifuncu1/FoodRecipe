@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Yemek Tarifi Ekle </title>
+    <style>
+     // reset
+* {
+	margin: 0;
+	padding: 0;
+	color: inherit;
+	box-sizing: inherit;
+
+	&:focus {
+		outline: none;
+	}
+}
+
+html {
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #ecf0f1;
+	font-family: 'Open Sans', sans-serif;
+	overflow: hidden;
+}
+
+h1, h2, h3, h4, h5 {
+	font-weight: normal;
+}
+
+form {
+	display: block;
+}
+
+label,
+input {
+	display: block;
+}
+
+// extends
+.animate {
+	transition: all 0.3s;
+}
+
+// main styles
+main {
+	display: block;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10;
+}
+
+.main-heading {
+	line-height: 100%;
+	font-weight: 600;
+	font-size: 28px;
+	text-transform: uppercase;
+}
+
+.btn {
+	display: block;
+	height: 50px;
+	line-height: 50px;
+	border: 0;
+	text-align: center;
+	cursor: pointer;
+	border-radius: 5px;
+	@extend .animate;
+
+	span {
+		font-weight: 600;
+		font-size: 14px;
+		text-transform: uppercase;
+		@extend .animate;
+
+		.fa {
+			margin-left: 8px;
+			font-size: 18px;
+			vertical-align: middle;
+		}
+	}
+
+	&:not(.btn-outline) {
+		background-color: #fff;
+		
+		span {
+			color: #666;
+		}
+		
+		&:hover {
+			background-color: #f7f7f7;
+		}
+	}
+	
+	&.btn-outline {
+		background-color: transparent;
+		border: 1px solid #fff;
+		
+		span {
+			color: #fff;
+		}
+		
+		&:hover {
+			background-color: #fff;
+			
+			span {
+				color: #666;
+			}
+		}
+	}
+}
+
+.popup-trigger {
+	width: 175px;
+	margin: auto;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	box-shadow: 0 0 25px 0 rgba(0,0,0,.05);
+}
+
+.overlay {
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	float: left;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 5;
+	opacity: 0;
+	transform: translateY(200px);
+	transition: opacity 0.5s, transform 0.5s, z-index 0s 0.5s;
+	
+	.overlay-background {
+		background-color: rgba(44,62,80,.8);
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 5;
+	}
+	
+	.overlay-content {
+		width: 100%;
+		max-width: 530px;
+		margin: 100px auto 0;
+		padding: 0 15px;
+		color: #fff;
+		position: relative;
+		z-index: 10;
+		@extend .animate;
+		
+		.overlay-close {
+			display: block;
+			font-size: 35px;
+			cursor: pointer;
+			position: absolute;
+			top: 0;
+			right: 15px;
+			@extend .animate;
+			
+			&:hover {
+				opacity: .8;
+			}
+		}
+		
+		.blurb {
+			margin-top: 35px;
+			line-height: 100%;
+			font-weight: 600;
+			font-size: 18px;
+		}
+		
+		.blurb-tagline {
+			display: block;
+			margin-top: 10px;
+			line-height: 100%;
+			font-size: 14px;
+		}
+		
+		.signup-form {
+			margin-top: 35px;
+			
+			label {
+				line-height: 100%;
+				margin-bottom: 5px;
+				font-size: 14px;
+			}
+			
+			input {
+				background-color: transparent;
+				width: 100%;
+				height: 30px;
+				margin-bottom: 20px;
+				padding: 0 8px;
+				border: 1px solid rgba(254,254,254,.3);
+				border-radius: 5px;
+				@extend .animate;
+				
+				&:hover,
+				&:focus {
+					border-color: #fff;
+				}
+			}
+			
+			.submit-btn {
+				width: 150px;
+			}
+		}
+	}
+	
+	&.open {
+		z-index: 15;
+		opacity: 1;
+		transform: translateY(0);
+		transition: opacity 0.5s, transform 0.5s, z-index 0s;
+	}
+	
+	&.short .overlay-content {
+		margin: 30px auto;
+	}
+}
+
+@media (max-width: 600px) {
+	
+	.overlay .overlay-content {
+		margin: 25px auto;
+	}
+}
+    </style>
+  </head>
+  
+<body style="background-color: #1B2430;">
+<form action="/izzycode/postfoodRecipe" method="post" enctype="multipart/form-data" class="form-horizontal">
+  <fieldset>
+    <!-- Form Name -->
+    <legend style="color: white;">Yemek Tarifi</legend>
+
+    <!-- Text input -->
+    <div class="form-group">
+      <label style="color: white;" class="col-md-4 control-label" for="product_name">Yemek Tarifi Adı</label>
+      <div class="col-md-4">
+        <input style="background-color: black;color:white" id="product_name" name="product_name" placeholder="Ürün Adı" class="form-control input-md" required="" type="text">
+      </div>
+    </div>
+
+    <!-- Select Basic -->
+    <div class="form-group">
+      <label style="color: white;" class="col-md-4 control-label" for="product_categorie">Ürün Kategorisi</label>
+      <div class="col-md-4">
+        <select class="selectpicker" multiple title="Pick your condiments" data-live-search="true">
+          <% ingredients.forEach(element => { %>
+            <option value="<%-element%>"><%-element.Ingredients_Name%></option>
+          <% }) %>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label style="color: white;" class="col-md-4 control-label" for="product_description">Yemek Malzemeleri</label>
+      <div class="col-md-4">
+        <textarea style="background-color: black;color:white" class="form-control" id="food_Ingredients" placeholder="Not eklemek isterseniz ekleyiniz." name="food_Ingredients"></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label style="color: white;" class="col-md-4 control-label" for="product_description">Yemek Açıklaması</label>
+      <div class="col-md-4">
+        <textarea style="background-color: black;color:white" class="form-control" id="product_description" placeholder="Not eklemek isterseniz ekleyiniz." name="product_description"></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label style="color: white;" class="col-md-4 control-label" for="files">Malzeme Fotoğrafı</label>
+      <div class="col-md-4">
+        <input style="background-color: black;color:white" id="image" name="image" class="input-files" type="file">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="singlebutton"></label>
+      <div class="col-md-4">
+        <button type="submit" id="singlebutton" name="singlebutton" class="btn btn-primary">Yükle</button>
+        <img height="80" width="80" id="blah0" src="#" alt="your image"/>
+      </div>
+    </div>
+  </fieldset>
+</form>
+<script>
+  $(document).ready(function(){
+    $("#images").change(function(){
+      $("#blah").show();
+    });
+  });
+</script>
+
+<script>
+  const images = document.getElementById('images');
+  images.onchange = evt => {
+    var $div = $('img[id^="blah"]:last');
+
+    // Read the Number from that DIV's ID (i.e: 3 from "klon3")
+    // And increment that number by 1
+    var num = parseInt( $div.prop("id").match(/\d+/g), 10 ) + 1;
+
+    // Clone it and assign the new ID (i.e: from num 4 to ID "klon4")
+    var $klon = $div.clone().prop('id', 'blah' + num);
+
+    // Finally insert $klon wherever you want
+    $div.after($klon.text('klon' + num));
+    const [file] = images.files;
+    if (file) {
+      for (let i = 0; i < images.files.length; i++) {
+        $(`#blah${i}`).attr("src", URL.createObjectURL(images.files[i]));
+      }
+    }
+  };
+</script>
+
+<script>
+  const array = "<%-ingredients%>";
+  const selectElement = document.querySelector('.selectpicker');
+
+  selectElement.addEventListener('change', (event) => {
+    const result = document.querySelector('.result');
+    const id = array.split(event.target.value + ':')[1].split(',')[0];
+    console.log(array.split(event.target.value + ':')[1].split(',')[0]);
+    $('#food_Ingredients').val($('#food_Ingredients').val() + event.target.value + ':' + id + ':' + ',');
+  });
+</script>
+</body>
+</html>

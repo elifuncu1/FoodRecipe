@@ -14,7 +14,6 @@ const RecipeSchema = new Schema({
         type: [{
             name: String,
             weight : Number,
-            unit: String,
             category : String
         }]
     },

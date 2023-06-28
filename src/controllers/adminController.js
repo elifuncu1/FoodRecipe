@@ -2,8 +2,10 @@ const FoodIngredients = require('../models/foodIngredients');
 const foodRecipes = require('../models/foodRecipe');
 const ids = require('../models/ids');
 const ProductCategories = require('../models/productCategoryModel');
+const RecipeCategories = require('../models/recipeCategoryModel');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
+
 const showHomePage = async (req, res, next) => {
 
     try {
@@ -28,10 +30,10 @@ const showProductPage = async (req,res,next) => {
 const showRecipePage = async (req,res,next) => {
     try{
         const ingredients = await FoodIngredients.find({active: "1"})
-        const categories = await ProductCategories.find();
+        const categories = await RecipeCategories.find();
 
 
-        res.render('admin/addFoodRecipe',{ layout: '../layouts/adminHome_Layout', title: `Product ADD`, description: ``, keywords: ``,ingredients })
+        res.render('admin/addFoodRecipe',{ layout: '../layouts/free', title: `Product ADD`, description: ``, keywords: ``,ingredients,categories })
     }
     
     catch(err){
@@ -50,7 +52,7 @@ const postFoodIngredients = async (req,res,next) => {
             Ingredients_MainCategory: req.body.topic,
             Ingredients_SubCategory: req.body.chapter,
             Ingredients_Type: req.body.typeofIngredients,
-            Ingredients_ID: uuidv4(),
+            //Ingredients_ID: uuidv4(),
             Ingredients_SubName: req.body.product_subname,
             Ingredients_Weight: req.body.product_weight,
             Ingredients_Note: req.body.product_description,
@@ -75,30 +77,47 @@ const postFoodIngredients = async (req,res,next) => {
         console.log(err)
     }
 }
-const postfoodRecipe = async (req,res,next) => {
-    try{
-        const informations = {
+const postfoodRecipe = async (req, res, next) => {
+    try {
+        console.log("sflaknfsajlkfnalj")
+      const {
+        product_name,
+        recipeCategory,
+        product_description,
+        video,
+        photos
+    } = req.body;
+    const foodIngredients = JSON.parse(req.body.foodIngredients);
+    console.log(foodIngredients)
 
-            Recipe_Name: req.body.product_name,
-            Recipe_Description: req.body.product_description,
-            Recipe_Ingredients: [],
-            Recipe_photo: req.file.filename,
-            Ingredients_Active: "1"
-
-        }
-        
-        const newProduct = new foodRecipes(
-            informations,
-            
-        );
-        await newProduct.save();
-        res.redirect('../izzycode/recipe');
-        console.log(req.body.product_name+' başarı ile veritabanına eklendi.')
+      const ingredients = foodIngredients.map(ingredient => {
+        return {
+          name: ingredient.Ingredients_Name,
+          weight: ingredient.Ingredients_Weight,
+          category: ingredient.Ingredients_SubCategory
+        };
+      });
+      const informations = {
+        Recipe_Name: product_name,
+        Recipe_Description: product_description,
+        Recipe_Category:recipeCategory,
+        Recipe_Video:video,
+        Recipe_Ingredients: ingredients,
+        Recipe_photo: photos,
+        Ingredients_Active: "1"
+      };
+  
+      const newProduct = new foodRecipes(informations);
+      console.log(newProduct)
+      await newProduct.save();
+  
+      res.redirect('../izzycode/recipe');
+      console.log(product_name + ' başarı ile veritabanına eklendi.');
+    } catch (err) {
+      console.log(err);
     }
-    catch(err){
-        console.log(err)
-    }
-}
+  };
+  
 
 module.exports = {
     showHomePage,
