@@ -9,6 +9,6 @@ router.get('/addproduct', adminController.showProductPage);
 router.get('/recipe', adminController.showRecipePage);
 //post
 router.post('/postfoodIngredients',multerConfig.single('image'),adminController.postFoodIngredients)
-router.post('/postfoodRecipe',multerConfig.single('photos'),adminController.postfoodRecipe)
+router.post('/postfoodRecipe', multerConfig.array('photos', 10), adminController.postfoodRecipe);
 
 module.exports = router;

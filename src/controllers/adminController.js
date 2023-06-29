@@ -58,7 +58,7 @@ const postFoodIngredients = async (req,res,next) => {
             Ingredients_Note: req.body.product_description,
             Ingredients_Photo: req.file.filename,
             Ingredients_Active: 1,
-            Ingredients_SpecialID: SpecialID[0].Ingredients_CustomID+1
+            Ingredients_SpecialID: uuidv4()
         }
         const newProduct = new FoodIngredients(
             informations,
@@ -79,17 +79,15 @@ const postFoodIngredients = async (req,res,next) => {
 }
 const postfoodRecipe = async (req, res, next) => {
     try {
-        console.log("sflaknfsajlkfnalj")
       const {
         product_name,
         recipeCategory,
         product_description,
-        video,
-        photos
-    } = req.body;
-    const foodIngredients = JSON.parse(req.body.foodIngredients);
-    console.log(foodIngredients)
-
+        video
+      } = req.body;
+  
+      const foodIngredients = JSON.parse(req.body.foodIngredients);
+      const photos = req.files.photos; // Fotoğraf array'ını doğru şekilde al
       const ingredients = foodIngredients.map(ingredient => {
         return {
           name: ingredient.Ingredients_Name,
@@ -97,18 +95,18 @@ const postfoodRecipe = async (req, res, next) => {
           category: ingredient.Ingredients_SubCategory
         };
       });
+  
       const informations = {
         Recipe_Name: product_name,
         Recipe_Description: product_description,
-        Recipe_Category:recipeCategory,
-        Recipe_Video:video,
+        Recipe_Category: recipeCategory,
+        Recipe_Video: video,
         Recipe_Ingredients: ingredients,
         Recipe_photo: photos,
         Ingredients_Active: "1"
       };
   
       const newProduct = new foodRecipes(informations);
-      console.log(newProduct)
       await newProduct.save();
   
       res.redirect('../izzycode/recipe');
@@ -118,7 +116,6 @@ const postfoodRecipe = async (req, res, next) => {
     }
   };
   
-
 module.exports = {
     showHomePage,
     showProductPage,

@@ -40,7 +40,8 @@
     }
 
     .form-group input[type="text"],
-    .form-group textarea {
+    .form-group textarea,
+    .form-group select {
       width: 100%;
       padding: 10px;
       border: 1px solid #cccccc;
@@ -77,9 +78,10 @@
       text-align: left;
     }
 
-    .preview-image {
-      max-width: 200px;
-      max-height: 200px;
+    .thumbnail {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
       margin-right: 10px;
     }
 
@@ -155,7 +157,11 @@
 
       <div class="form-group">
         <label for="photos">Fotoğraf Seçin:</label>
-        <input type="file" id="photos" name="photos" accept="image/*" multiple>
+        <input class="input-files" type="file" id="photos" name="photos" multiple>
+      </div>
+
+      <div class="form-group">
+        <div id="image-gallery"></div>
       </div>
 
       <div class="form-group">
@@ -164,30 +170,29 @@
       </div>
     </form>
   </div>
-
   <script>
     const ingredientSelect = document.getElementById('ingredient-select');
     const ingredientQuantityInput = document.getElementById('ingredient-quantity');
     const addIngredientButton = document.getElementById('add-ingredient');
     const selectedIngredientsTableBody = document.querySelector('#selected-ingredients-table tbody');
-    const previewContainer = document.getElementById('preview-container');
+    const imageGallery = document.getElementById('image-gallery');
     const foodIngredientsInput = document.getElementById('foodIngredients');
     const recipeForm = document.getElementById('recipe-form');
     let foodIngredients = []; // İçerikleri tutacak dizi
-
+  
     addIngredientButton.addEventListener('click', function () {
       const selectedOptions = Array.from(ingredientSelect.selectedOptions);
       const ingredientQuantity = ingredientQuantityInput.value;
-
+  
       if (!ingredientQuantity) {
         alert('Miktar alanı boş bırakılamaz!');
         return;
       }
-
+  
       selectedOptions.forEach(function (option) {
         const ingredientData = JSON.parse(option.value);
         const quantity = ingredientQuantity;
-
+  
         const combinedData = {
           "Ingredients_Name": ingredientData.Ingredients_Name,
           "Ingredients_Weight": ingredientData.Ingredients_Weight * quantity,
@@ -195,52 +200,55 @@
           "Ingredients_SubCategory": ingredientData.Ingredients_SubCategory,
           "quantity": quantity
         };
-
+  
         foodIngredients.push(combinedData);
         console.log(foodIngredients);
-
+  
         const row = document.createElement('tr');
         const jsonCell = document.createElement('td');
         jsonCell.textContent = JSON.stringify(combinedData);
         row.appendChild(jsonCell);
-
+  
         selectedIngredientsTableBody.appendChild(row);
       });
-
+  
       ingredientQuantityInput.value = '';
     });
-
+  
     function createPreviewImage(file) {
       const reader = new FileReader();
-
+  
       reader.onload = function (event) {
         const img = document.createElement('img');
         img.setAttribute('src', event.target.result);
-        img.setAttribute('class', 'preview-image');
-        previewContainer.appendChild(img);
+        img.setAttribute('class', 'thumbnail');
+        imageGallery.appendChild(img);
       };
-
+  
       reader.readAsDataURL(file);
     }
-
+  
     recipeForm.addEventListener('submit', function (event) {
       event.preventDefault();
-
+  
       const photosInput = document.getElementById('photos');
       const photos = photosInput.files;
-
+  
+      imageGallery.innerHTML = ''; // Önceki galeri içeriğini temizle
+  
       for (let i = 0; i < photos.length; i++) {
         console.log('Fotoğraf Adı:', photos[i].name);
         console.log('Fotoğraf Boyutu:', photos[i].size);
-
+  
         createPreviewImage(photos[i]);
       }
-
+  
       foodIngredientsInput.value = JSON.stringify(foodIngredients);
-
+  
       recipeForm.submit();
     });
   </script>
+  
 </body>
 
 </html>
