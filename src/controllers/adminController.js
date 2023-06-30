@@ -90,7 +90,7 @@ const postfoodRecipe = async (req, res, next) => {
       const photos = req.files.photos; // Fotoğraf array'ını doğru şekilde al
       const ingredients = foodIngredients.map(ingredient => {
         return {
-          name: ingredient.Ingredients_Name,
+          name: ingredient.Ingredients_SubName,
           weight: ingredient.Ingredients_Weight,
           category: ingredient.Ingredients_SubCategory
         };
