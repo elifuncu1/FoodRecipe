@@ -15,48 +15,30 @@ const homePage = async (req, res, next) => {
     }
 };
 
-const GetPrice = async (req, res, next) => {
-    try {
-      const findedRecipe = await foodRecipes.findOne({ Recipe_Name: req.params.recipeName });
-      const recipeIngredients = findedRecipe.Recipe_Ingredients;
-      const ProductList = recipeIngredients.map(ingredient => ingredient.name);
-      const foodFindPromises = recipeIngredients.map(async (ingredient) => {
-        const FoodFind = await Products.find({
-          $and: [
-            { product_name: { $regex: new RegExp(ingredient.name, 'i') } },
-            { product_category: { $regex: new RegExp(`^${ingredient.category}$`, 'i') } }
-          ]
-        });
-        
-        
-        
-        return FoodFind;
-      });
-      const FoodFinds = await Promise.all(foodFindPromises);
-      res.json(FoodFinds)
-      const IngredientsList = [];
-      const ProductsList = [];
-  
-      for (let i = 0; i < recipeIngredients.length; i++) {
-        const ingredient = recipeIngredients[i];
-        const FoodFind = FoodFinds[i];
-        const info = {
-          FoodName: ingredient.name,
-          productList: FoodFind,
-          wantedQuantity: ingredient.weight,
-          x: 1
-        };
-        ProductsList.push(await priceCalculateModule.getCostOfProduct(await jcc.upperCaseValues(info.productList), info.wantedQuantity, info.x));
-        IngredientsList.push(await FoodIngredients.findOne({ Ingredients_SubName : recipeIngredients[i].name }));
-        
+const GetPrice = async (req,res,next) => {
+  try{
+      var ProductsList = []
+      const findRecipes = await foodRecipes.findOne({Recipe_Name: req.params.recipeName})
+      console.log(findRecipes)
+      const ProductList = findRecipes.Recipe_Ingredients
+      for(let i = 0;i<ProductList.length;i++){
+          const words = ProductList[i].name.split(' ')
+          const lastWord = words[words.length - 1];
+          const FoodFind = await Products.find({$and:[{product_name:  { "$regex": lastWord, $options: 'i' }},{product_category: ProductList[i].product_category}]})
+          var info = {
+              FoodName: ProductList[i].name,
+              productList: FoodFind,
+              wantedQuantity: ProductList[i].weight,
+              x: ProductList[i].weight
+          }
+          ProductsList.push(info)     
       }
       res.json(ProductsList)
-      res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: 'Yemek Tarifleri', description: '', keywords: '', findedRecipe, IngredientsList, ProductsList });
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ error: 'Internal Server Error' });
     }
-  };
+    catch (err){
+      console.log(err)
+  }
+}
   
   
 
