@@ -34,28 +34,45 @@ const showDetailsOfRecipePage1 = async (req, res, next) => {
 };
 const showDetailsOfRecipePage = async (req, res, next) => {
     try {
-        var ProductsList = []
-        const findRecipes = await foodRecipes.findOne({Recipe_Name: req.params.recipeName})
+        const findedRecipe = await foodRecipes.findOne({ Recipe_Name: req.params.recipeName });
+        const recipeIngredients = findedRecipe.Recipe_Ingredients;
+     //   const ProductList = recipeIngredients.map(ingredient => ingredient.name);
+        const foodFindPromises = recipeIngredients.map(async (ingredient) => {
+          const FoodFind = await Products.find({
+            $and: [
+              { product_name: { $regex: new RegExp(ingredient.subname, 'i') } },
+              { product_category: { $regex: new RegExp(`^${ingredient.category}$`, 'i') } }
+            ]
+          });
+          
+          
+          
+          return FoodFind;
+        });
+        const FoodFinds = await Promise.all(foodFindPromises);
+        const IngredientsList = [];
+        const ProductsList = [];
+      
         
-        const ProductList = findRecipes.Recipe_Ingredients.split(',')
-        for(let i = 0;i<ProductList.length;i++){
-            const words = ProductList[i].split(':')[0].split(' ')
-            const lastWord = words[words.length - 1];
-            const FoodFind = await Products.find({product_name:  { "$regex": lastWord, $options: 'i' }})
-            var info = {
-
-                FoodName: ProductList[i].split(':')[0],
-                productList: FoodFind,
-                wantedQuantity: ProductList[i].split(':')[2],
-                x: ProductList[i].split(':')[1]
-            }
-            ProductsList.push(priceCalculateModule.getCostOfProduct(info.productList,info.wantedQuantity,info.x))     
-
+        for (let i = 0; i < recipeIngredients.length; i++) {
+          const ingredient = recipeIngredients[i];
+          const FoodFind = FoodFinds[i];
+          const info = {
+            FoodName: ingredient.name,
+            SubName : ingredient.subname,
+            productList: FoodFind,
+            wantedQuantity: ingredient.weight,
+            x: 1
+          };
+          ProductsList.push(await priceCalculateModule.getCostOfProduct(await jcc.upperCaseValues(info.productList), info.wantedQuantity, info.x));
+          IngredientsList.push(await FoodIngredients.findOne({ Ingredients_SubName : recipeIngredients[i].subname }));
+          
         }
-        res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: ``, selectedRecipe, foodIngredientsList,ProductsList });
-    } catch (err) {
+        res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: 'Yemek Tarifleri', description: '', keywords: '', findedRecipe, IngredientsList, ProductsList });
+      } catch (err) {
         console.log(err);
-    }
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
 
 
 };

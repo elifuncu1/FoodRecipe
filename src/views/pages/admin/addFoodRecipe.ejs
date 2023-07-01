@@ -192,7 +192,7 @@
       selectedOptions.forEach(function (option) {
         const ingredientData = JSON.parse(option.value);
         const quantity = ingredientQuantity;
-  
+        
         const combinedData = {
           "Ingredients_Name": ingredientData.Ingredients_Name,
           "Ingredients_Weight": ingredientData.Ingredients_Weight * quantity,

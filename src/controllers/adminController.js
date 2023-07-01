@@ -3,8 +3,12 @@ const foodRecipes = require('../models/foodRecipe');
 const ids = require('../models/ids');
 const ProductCategories = require('../models/productCategoryModel');
 const RecipeCategories = require('../models/recipeCategoryModel');
+const Products = require('../models/products');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
+const jcc = require('json-case-convertor');
+const priceCalculateModule = require("./BusinessModules/ProductModules/priceCalculateModule");
+
 
 const showHomePage = async (req, res, next) => {
 
@@ -18,33 +22,33 @@ const showHomePage = async (req, res, next) => {
         console.log(err);
     }
 };
-const showProductPage = async (req,res,next) => {
-    try{ 
+const showProductPage = async (req, res, next) => {
+    try {
         const categories = await ProductCategories.find();
-        res.render('admin/addproduct',{ layout: '../layouts/free', title: `Product ADD`, description: ``, keywords: ``,categories })
+        res.render('admin/addproduct', { layout: '../layouts/free', title: `Product ADD`, description: ``, keywords: ``, categories })
     }
-    catch(err){
+    catch (err) {
         console.log(err)
     }
 }
-const showRecipePage = async (req,res,next) => {
-    try{
-        const ingredients = await FoodIngredients.find({active: "1"})
+const showRecipePage = async (req, res, next) => {
+    try {
+        const ingredients = await FoodIngredients.find({ active: "1" })
         const categories = await RecipeCategories.find();
 
 
-        res.render('admin/addFoodRecipe',{ layout: '../layouts/free', title: `Product ADD`, description: ``, keywords: ``,ingredients,categories })
+        res.render('admin/addFoodRecipe', { layout: '../layouts/free', title: `Product ADD`, description: ``, keywords: ``, ingredients, categories })
     }
-    
-    catch(err){
+
+    catch (err) {
         console.log(err)
     }
 }
 //Post
 
-const postFoodIngredients = async (req,res,next) => {
-    try{
-        const SpecialID = await ids.find({active: "1"})
+const postFoodIngredients = async (req, res, next) => {
+    try {
+        const SpecialID = await ids.find({ active: "1" })
         console.log(SpecialID)
         const informations = {
 
@@ -62,60 +66,76 @@ const postFoodIngredients = async (req,res,next) => {
         }
         const newProduct = new FoodIngredients(
             informations,
-            
+
         );
         await newProduct.save();
         res.redirect('../izzycode/addproduct');
-        console.log(req.body.product_name+' başarı ile veritabanına eklendi.')
+        console.log(req.body.product_name + ' başarı ile veritabanına eklendi.')
         const UpdateID = {
-            Ingredients_CustomID : SpecialID[0].Ingredients_CustomID+1
+            Ingredients_CustomID: SpecialID[0].Ingredients_CustomID + 1
         }
 
         await ids.findByIdAndUpdate(SpecialID[0]._id, UpdateID);
     }
-    catch(err){
+    catch (err) {
         console.log(err)
     }
 }
 const postfoodRecipe = async (req, res, next) => {
     try {
-      const {
-        product_name,
-        recipeCategory,
-        product_description,
-        video
-      } = req.body;
-  
-      const foodIngredients = JSON.parse(req.body.foodIngredients);
-      const photos = req.files.photos; // Fotoğraf array'ını doğru şekilde al
-      const ingredients = foodIngredients.map(ingredient => {
-        return {
-          name: ingredient.Ingredients_SubName,
-          weight: ingredient.Ingredients_Weight,
-          category: ingredient.Ingredients_SubCategory
+        const {
+            product_name,
+            recipeCategory,
+            product_description,
+            video
+        } = req.body;
+
+        let price = 0;
+        const foodIngredients = JSON.parse(req.body.foodIngredients);
+        const photos = req.files.photos;
+
+        const ingredients = await Promise.all(foodIngredients.map(async (ingredient) => {
+            const productFind = await Products.find({
+              $and: [
+                { product_name: { $regex: new RegExp(ingredient.subname, 'i') } },
+                { product_category: { $regex: new RegExp(`^${ingredient.category}$`, 'i') } }
+              ]
+            });
+            const costOfProduct = await priceCalculateModule.getCostOfProduct(jcc.upperCaseValues(productFind), ingredient.Ingredients_Weight, 1).cheapestProduct.requested_price;
+            if (costOfProduct !== null) {
+                price += costOfProduct;
+              }
+            return {
+              subname: ingredient.Ingredients_SubName,
+              weight: ingredient.Ingredients_Weight,
+              category: ingredient.Ingredients_SubCategory,
+              name: ingredient.Ingredients_Name,
+              quantity: ingredient.quantity
+            };
+          }));
+          
+
+        const informations = {
+            Recipe_Name: product_name,
+            Recipe_Description: product_description,
+            Recipe_Category: recipeCategory,
+            Recipe_Video: video,
+            Recipe_Ingredients: ingredients,
+            Recipe_photo: photos,
+            Recipe_Price: price,
+            Ingredients_Active: "1"
         };
-      });
-  
-      const informations = {
-        Recipe_Name: product_name,
-        Recipe_Description: product_description,
-        Recipe_Category: recipeCategory,
-        Recipe_Video: video,
-        Recipe_Ingredients: ingredients,
-        Recipe_photo: photos,
-        Ingredients_Active: "1"
-      };
-  
-      const newProduct = new foodRecipes(informations);
-      await newProduct.save();
-  
-      res.redirect('../izzycode/recipe');
-      console.log(product_name + ' başarı ile veritabanına eklendi.');
+
+        const newProduct = new foodRecipes(informations);
+        await newProduct.save();
+        res.redirect('../izzycode/recipe');
+        console.log(product_name + ' başarı ile veritabanına eklendi.');
     } catch (err) {
-      console.log(err);
+        console.log(err);
     }
-  };
-  
+};
+
+
 module.exports = {
     showHomePage,
     showProductPage,

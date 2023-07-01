@@ -13,8 +13,10 @@ const RecipeSchema = new Schema({
     Recipe_Ingredients: {
         type: [{
             name: String,
+            subname:String,
             weight : Number,
-            category : String
+            category : String,
+            quantity: Number
         }]
     },
     Recipe_photo: {

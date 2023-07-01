@@ -118,15 +118,19 @@
                       <% } %>
                     <% }); %>
                     
-                    <div class="product__details__price">₺ <%= totalAmount %></div>
+                    <div class="product__details__price">₺ <%= totalAmount.toFixed(2) %></div>
                     
                     
                                     <p>
-                                        <%= findedRecipe.Recipe_Ingredients %>
+                                        <% findedRecipe.Recipe_Ingredients.forEach(function(foodIngredients) { %>
+                                            
+                                            <%=foodIngredients.quantity   %> x <%= foodIngredients.name %><br>
+                                            <% }); %>
+
                                     </p>
                                     <div class="product__details__quantity">
                                         <div class="quantity">
-                                            <div class="pro-qty">
+                                            <div class="pro-qty"> 
                                                 <input type="text" value="1">
                                             </div>
                                         </div>
