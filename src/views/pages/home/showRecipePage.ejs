@@ -1,4 +1,10 @@
 <!-- Hero Section Begin -->
+<style>
+    #reviewList {
+        max-height: 400px;
+        overflow-y: scroll;
+    }
+</style>
 <section class="hero hero-normal">
     <div class="container">
         <div class="row">
@@ -9,17 +15,16 @@
                         <span>All departments</span>
                     </div>
                     <ul>
-                        <li><a href="#">Fresh Meat</a></li>
-                        <li><a href="#">Vegetables</a></li>
-                        <li><a href="#">Fruit & Nut Gifts</a></li>
-                        <li><a href="#">Fresh Berries</a></li>
-                        <li><a href="#">Ocean Foods</a></li>
-                        <li><a href="#">Butter & Eggs</a></li>
-                        <li><a href="#">Fastfood</a></li>
-                        <li><a href="#">Fresh Onion</a></li>
-                        <li><a href="#">Papayaya & Crisps</a></li>
-                        <li><a href="#">Oatmeal</a></li>
-                        <li><a href="#">Fresh Bananas</a></li>
+                        <li><a href="#"></a></li>
+
+
+                        <% categories.forEach(function(category) { %>
+                            <li><a href="#">
+                                    <%= category.name %>
+                                </a></li>
+                            <% }) %>
+
+
                     </ul>
                 </div>
             </div>
@@ -27,10 +32,7 @@
                 <div class="hero__search">
                     <div class="hero__search__form">
                         <form action="#">
-                            <div class="hero__search__categories">
-                                All Categories
-                                <span class="arrow_carrot-down"></span>
-                            </div>
+
                             <input type="text" placeholder="What do yo u need?">
                             <button type="submit" class="site-btn">SEARCH</button>
                         </form>
@@ -109,48 +111,28 @@
                         <i class="fa fa-star-half-o"></i>
                         <span>(18 reviews)</span>
                     </div>
-                    <% let totalAmount = 0 %>
+                    <% let totalAmount=0 %>
 
-                    <% ProductsList.forEach(function(obj) { %>
-                      <% const averagePrice = parseFloat(obj.averagePrice) %>
-                      <% if (!isNaN(averagePrice)) { %>
-                        <% totalAmount += averagePrice %>
-                      <% } %>
-                    <% }); %>
-                    
-                    <div class="product__details__price">₺ <%= totalAmount.toFixed(2) %></div>
-                    
-                    
-                                    <p>
-                                        <% findedRecipe.Recipe_Ingredients.forEach(function(foodIngredients) { %>
-                                            
-                                            <%=foodIngredients.quantity   %> x <%= foodIngredients.name %><br>
+                        <% ProductsList.forEach(function(obj) { %>
+                            <% const averagePrice=parseFloat(obj.averagePrice) %>
+                                <% if (!isNaN(averagePrice)) { %>
+                                    <% totalAmount +=averagePrice %>
+                                        <% } %>
                                             <% }); %>
 
-                                    </p>
-                                    <div class="product__details__quantity">
-                                        <div class="quantity">
-                                            <div class="pro-qty"> 
-                                                <input type="text" value="1">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <a href="#" class="primary-btn">ADD TO CARD</a>
-                                    <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
-                                    <ul>
-                                        <li><b>Availability</b> <span>In Stock</span></li>
-                                        <li><b>Shipping</b> <span>01 day shipping. <samp>Free pickup today</samp></span>
-                                        </li>
-                                        <li><b>Weight</b> <span>0.5 kg</span></li>
-                                        <li><b>Share on</b>
-                                            <div class="share">
-                                                <a href="#"><i class="fa fa-facebook"></i></a>
-                                                <a href="#"><i class="fa fa-twitter"></i></a>
-                                                <a href="#"><i class="fa fa-instagram"></i></a>
-                                                <a href="#"><i class="fa fa-pinterest"></i></a>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                                <div class="product__details__price">₺ <%= totalAmount.toFixed(2) %>
+                                                </div>
+
+
+                                                <p>
+                                                    <% findedRecipe.Recipe_Ingredients.forEach(function(foodIngredients)
+                                                        { %>
+
+                                                        <%=foodIngredients.quantity %> x <%= foodIngredients.name %><br>
+                                                                <% }); %>
+
+                                                </p>
+
                 </div>
             </div>
             <div class="col-lg-12">
@@ -162,7 +144,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab"
-                                aria-selected="false">Information</a>
+                                aria-selected="false">Video</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"
@@ -179,47 +161,82 @@
                             </div>
                         </div>
                         <div class="tab-pane" id="tabs-2" role="tabpanel">
-                            <div class="product__details__tab__desc">
-                                <h6>Products Infomation</h6>
-                                <p>Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.
-                                    Pellentesque in ipsum id orci porta dapibus. Proin eget tortor risus.
-                                    Vivamus suscipit tortor eget felis porttitor volutpat. Vestibulum ac diam
-                                    sit amet quam vehicula elementum sed sit amet dui. Donec rutrum congue leo
-                                    eget malesuada. Vivamus suscipit tortor eget felis porttitor volutpat.
-                                    Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Praesent
-                                    sapien massa, convallis a pellentesque nec, egestas non nisi. Vestibulum ac
-                                    diam sit amet quam vehicula elementum sed sit amet dui. Vestibulum ante
-                                    ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
-                                    Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.
-                                    Proin eget tortor risus.</p>
-                                <p>Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Lorem
-                                    ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit aliquet
-                                    elit, eget tincidunt nibh pulvinar a. Cras ultricies ligula sed magna dictum
-                                    porta. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus
-                                    nibh. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.</p>
+                            <div class="video-container">
+                                <iframe id="videoFrame" width="560" height="315" frameborder="0"
+                                    allowfullscreen></iframe>
+
                             </div>
+
                         </div>
-                        <div class="tab-pane" id="tabs-3" role="tabpanel">
-                            <div class="product__details__tab__desc">
-                                <h6>Products Infomation</h6>
-                                <p>Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.
-                                    Pellentesque in ipsum id orci porta dapibus. Proin eget tortor risus.
-                                    Vivamus suscipit tortor eget felis porttitor volutpat. Vestibulum ac diam
-                                    sit amet quam vehicula elementum sed sit amet dui. Donec rutrum congue leo
-                                    eget malesuada. Vivamus suscipit tortor eget felis porttitor volutpat.
-                                    Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Praesent
-                                    sapien massa, convallis a pellentesque nec, egestas non nisi. Vestibulum ac
-                                    diam sit amet quam vehicula elementum sed sit amet dui. Vestibulum ante
-                                    ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
-                                    Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.
-                                    Proin eget tortor risus.</p>
-                            </div>
+
+
+                        <div class="tab-pane" id="tabs-3" role="tabpanel" style="text-align: center;">
+                            <!-- Review List -->
+                            <ul id="reviewList">
+                                <% reviews.forEach(function(obj) { %>
+                                    <li>
+                                        <strong>
+                                            <%= obj.reviewer %>
+                                        </strong>
+                                    </li>
+                                    <li>
+                                        <span class="rating">Puan: <%= obj.rating %></span>
+                                    </li>
+                                    <li>
+                                        Açıklama: <%= obj.comment %>
+                                    </li>
+                                    <hr class="review-divider">
+                                    <% }) %>
+                            </ul>
+
+                            <!-- Review Form -->
+                            <form id="reviewForm" action="/reviews/<%= findedRecipe._id %>" method="POST" style="text-align: left;">
+                                <div class="form-group">
+                                    <label for="rating">Puan:</label>
+                                    <input type="range" id="rating" name="rating" min="1" max="5" style="color: darkred;" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="comment">Yorum:</label>
+                                    <textarea id="comment" name="comment" required></textarea>
+                                </div>
+
+                                <button class="btn-sm primary-btn " type="submit">Değerlendir</button>
+                            </form>
                         </div>
+
+                        <style>
+                            .form-group {
+                                margin-bottom: 10px;
+                            }
+
+                            #ratingValue {
+                                font-weight: bold;
+                            }
+                        </style>
+
+                        <script>
+                            $(document).ready(function () {
+                                $('#rating').on('input', function () {
+                                    var rating = $(this).val();
+                                    $('#ratingValue').text(rating);
+                                });
+
+                                $('.rating-stars .star').click(function () {
+                                    var rating = $(this).data('rating');
+                                    $('#rating').val(rating).trigger('input');
+                                    $('.rating-stars .star').removeClass('selected');
+                                    $(this).addClass('selected');
+                                });
+                            });
+                        </script>
+
+
+
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </section>
 <!-- Product Details Section End -->
 
@@ -262,4 +279,27 @@
         </div>
     </div>
 </section>
-<!-- Related Product Section End -->
+<script>
+
+
+
+
+
+    var youtubeLink = '<%= findedRecipe.Recipe_Video %>';
+    var embedLink = generateEmbedLink(youtubeLink);
+
+    document.getElementById('videoFrame').src = embedLink;
+
+    function generateEmbedLink(youtubeLink) {
+        var regex = /(?:\?v=|\/embed\/|\/\d{1,2}\/|\/vi\/|\/v\/|https?:\/\/(?:www\.)?youtube\.com\/(?:v\/|embed\/|watch\?v=|watch\?.+&v=)|youtu\.be\/)([^#\&\?\/\s]{11})/;
+        var match = youtubeLink.match(regex);
+
+        if (match && match[1]) {
+            var videoId = match[1];
+            var embedLink = 'https://www.youtube.com/embed/' + videoId;
+            return embedLink;
+        }
+
+        return null;
+    }
+</script>

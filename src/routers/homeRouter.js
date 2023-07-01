@@ -16,7 +16,7 @@ router.get('/GET/FoodRecipeList',homeController.getFoodRecipeList)
 
 router.get('/GET/test', homeController.Test);
 //Post
-
+router.post('/reviews/:recipeId', homeController.postFoodRecipeReview);
 router.post('/register',homeController.Register)
 router.post('/GET/DetailsOfRecipe',homeController.getDetailsOfRecipe)
 
