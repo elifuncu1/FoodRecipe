@@ -13,10 +13,16 @@ const { escape } = require('mysql');
 const homePage = async (req, res, next) => {
   try {
     const categories = await RecipeCategories.find();
-    const recipeList = await foodRecipes.find().limit(20);
+    const topRatedRecipes = await foodRecipes.find({ Recipe_Rate: { $exists: true } })
+    .sort({ Recipe_Rate: -1 })
+    .limit(20);
+      const latestRecipeList = await foodRecipes.find().sort({ _id: -1 }).limit(9);
+    const randomRecipeList = await foodRecipes.aggregate([{ $sample: { size: 9 } }]);
 
+res.json(topRatedRecipes)
+    
 
-    res.render('home/homePage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: ``, categories, recipeList })
+    res.render('home/homePage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: ``, categories,topRatedRecipes,latestRecipeList,randomRecipeList})
   }
   catch (err) {
     console.log(err)
@@ -60,8 +66,9 @@ const GetPrice = async (req, res, next) => {
       };
       ProductsList.push(await priceCalculateModule.getCostOfProduct(await jcc.upperCaseValues(info.productList), info.wantedQuantity, info.x));
       IngredientsList.push(await FoodIngredients.findOne({ Ingredients_SubName: recipeIngredients[i].subname }));
-
     }
+    //res.json(ProductsList)
+
     res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: 'Yemek Tarifleri', description: '', keywords: '', findedRecipe, IngredientsList, ProductsList, categories,reviews });
   } catch (err) {
     console.log(err);
@@ -144,28 +151,45 @@ const getFoodRecipeReviews = async function (recipeId) {
 
 const postFoodRecipeReview = async (req, res, next) => {
   try {
-    console.log("GELDİ1")
-    const { recipeId } = req.params; // Örnek olarak route parametresi olarak recipeId kullanıyoruz
+    const { recipeId } = req.params;
     const { rating, comment } = req.body;
+    const userId = req.cookies.loggedUser; // loggedUser cookies'ini alın
 
-    // Yeni bir değerlendirme oluştur
+    // Kullanıcının daha önce yorum yaptığı kontrol ediliyor
+    const user = await User.findOne({ User_ID: userId });
+
+    const existingReview = await Review.findOne({ recipe: recipeId, reviewer: user.kullaniciAdi });
+    if (existingReview) {
+      // Kullanıcı daha önce yorum yapmışsa hata döndürülüyor
+      return res.status(400).json({ message: 'You have already reviewed this recipe' });
+    }
+
+
     const newReview = new Review({
       recipe: recipeId,
-      rating: rating,
+      rating: Number(rating),
       comment: comment,
-      reviewer: "Kullanıcı", // İstediğiniz şekilde kullanıcı adını buraya ekleyebilirsiniz
+      reviewer: user.kullaniciAdi,
     });
 
-    // Değerlendirmeyi kaydet
     await newReview.save();
+
+    // Yorum kaydedildikten sonra, ilgili yemeğin puanını güncelleyin
+    const recipe = await foodRecipes.findById(recipeId);
+    recipe.Recipe_Rate = (recipe.Recipe_Rate * recipe.Review_Number + Number(rating)) / (recipe.Review_Number + 1); // Puanı güncelleyin
+    recipe.Review_Number += 1; // Yorum sayısını arttırın
+    console.log(recipe.Recipe_Rate);
+    console.log(recipe.Review_Number);
+    await recipe.save();
+
     const refererUrl = req.headers.referer;
     res.redirect(refererUrl);
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 
 

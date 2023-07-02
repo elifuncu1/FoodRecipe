@@ -46,9 +46,9 @@ const showRecipePage = async (req, res, next) => {
 }
 //Post
 
-const postFoodIngredients = async (req, res, next) => {
-    try {
-        const SpecialID = await ids.find({ active: "1" })
+const postFoodIngredients = async (req,res,next) => {
+    try{
+        const SpecialID = await ids.find({active: "1"})
         console.log(SpecialID)
         const informations = {
 
@@ -56,28 +56,28 @@ const postFoodIngredients = async (req, res, next) => {
             Ingredients_MainCategory: req.body.topic,
             Ingredients_SubCategory: req.body.chapter,
             Ingredients_Type: req.body.typeofIngredients,
-            //Ingredients_ID: uuidv4(),
+            Ingredients_ID: req.body.product_id,
             Ingredients_SubName: req.body.product_subname,
             Ingredients_Weight: req.body.product_weight,
             Ingredients_Note: req.body.product_description,
             Ingredients_Photo: req.file.filename,
             Ingredients_Active: 1,
-            Ingredients_SpecialID: uuidv4()
+            Ingredients_SpecialID: SpecialID[0].Ingredients_CustomID+1
         }
         const newProduct = new FoodIngredients(
             informations,
-
+            
         );
         await newProduct.save();
         res.redirect('../izzycode/addproduct');
-        console.log(req.body.product_name + ' başarı ile veritabanına eklendi.')
+        console.log(req.body.product_name+' başarı ile veritabanına eklendi.')
         const UpdateID = {
-            Ingredients_CustomID: SpecialID[0].Ingredients_CustomID + 1
+            Ingredients_CustomID : SpecialID[0].Ingredients_CustomID+1
         }
 
         await ids.findByIdAndUpdate(SpecialID[0]._id, UpdateID);
     }
-    catch (err) {
+    catch(err){
         console.log(err)
     }
 }
@@ -101,7 +101,7 @@ const postfoodRecipe = async (req, res, next) => {
                 { product_category: { $regex: new RegExp(`^${ingredient.category}$`, 'i') } }
               ]
             });
-            const costOfProduct = await priceCalculateModule.getCostOfProduct(jcc.upperCaseValues(productFind), ingredient.Ingredients_Weight, 1).cheapestProduct.requested_price;
+            const costOfProduct = await priceCalculateModule.getCostOfProduct(jcc.upperCaseValues(productFind), ingredient.Ingredients_Weight, 1).averagePrice;
             if (costOfProduct !== null) {
                 price += costOfProduct;
               }

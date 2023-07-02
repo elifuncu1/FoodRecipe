@@ -29,11 +29,13 @@ const RecipeSchema = new Schema({
     Recipe_Video: {
         type: String
     },
-    Recipe_Like: {
-        type: Number
+    Recipe_Rate: {
+        type: Number,
+        default:1 
     },
-    Recipe_UnLike: {
-        type: Number
+    Review_Number:{
+        type:Number,
+        default:0,
     },
     Recipe_Price: {
         type: Number

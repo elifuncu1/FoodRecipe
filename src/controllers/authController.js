@@ -28,7 +28,6 @@ ad
 
 // AUTH CONTROLLER
 const showLoginForm = (req, res, next) => {
-    console.log("aösbnasjfbjsk")
     try {
         res.render('user/userLoginPage', { layout: '../layouts/User/userLoginLayout', title: `Giriş`, description: ``, keywords: `` })
     } catch (err) {
