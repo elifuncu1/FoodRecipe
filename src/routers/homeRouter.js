@@ -6,7 +6,7 @@ router.get('/yemek/:recipeName',homeController.GetPrice)
 router.get('/category/:categoryName',homeController.showRecipeWithCategory)
 router.get('/recipe/add',homeController.showAddRecipePage)
 router.get('/',homeController.homePage)
-router.get('/tarif',homeController.showDetailsOfRecipePage)
+//router.get('/tarif',homeController.showDetailsOfRecipePage)
 router.get('/register',homeController.showRegisterPage)
 router.get('/GET/:ProductName/:categoryId/:quantity', homeController.getProductsWithPrice);
 //router.get('/register',homeController.showRegisterPage)

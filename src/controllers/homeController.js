@@ -59,7 +59,6 @@ const showAddRecipePage = async (req, res, next) => {
 const GetPrice = async (req, res, next) => {
   try {
     const categories = await RecipeCategories.find();
-
     const findedRecipe = await foodRecipes.findOne({ Recipe_Name: req.params.recipeName });
     const reviews = await getFoodRecipeReviews(findedRecipe._id)
     const recipeIngredients = findedRecipe.Recipe_Ingredients;
@@ -90,10 +89,15 @@ const GetPrice = async (req, res, next) => {
         wantedQuantity: ingredient.weight,
         x: 1
       };
-
       ProductsList.push(await priceCalculateModule.getCostOfProduct(await jcc.upperCaseValues(info.productList), info.wantedQuantity, info.x));
       IngredientsList.push(await FoodIngredients.findOne({ Ingredients_SubName: recipeIngredients[i].subname }));
     }
+    let price = priceCalculateModule.calculateTotalValueOfRecipe(ProductsList);
+    findedRecipe.Recipe_Price = price; // Price değerini güncelle
+
+    await findedRecipe.save(); // Güncellenmiş nesneyi kaydet
+
+    console.log(price)
 
     res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: 'Yemek Tarifleri', description: '', keywords: '', findedRecipe, IngredientsList, ProductsList, categories, reviews });
   } catch (err) {
@@ -390,12 +394,13 @@ const postfoodRecipe = async (req, res, next) => {
       Recipe_Video: video,
       Recipe_Ingredients: ingredients,
       Recipe_photo: photos,
-      Recipe_Price: price,
+      Recipe_Price: 0,
       Ingredients_Active: "1"
     };
 
     const newProduct = new foodRecipes(informations);
     await newProduct.save();
+    res.json(newProduct)
     res.redirect('../');
     console.log(product_name + ' başarı ile veritabanına eklendi.');
   } catch (err) {

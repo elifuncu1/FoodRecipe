@@ -13,40 +13,43 @@ module.exports.getCostOfProduct = function (productList, wantedQuantity, x) {
 
     try {
         listForReturn.forEach(element => {
-            productQuantity = findQuantityOfProducts(element); // Her eleman için ürün miktarını bulur
-            unit = findUnit(element); // Her eleman için ürün birimini bulur
+            if (element) {
+                productQuantity = findQuantityOfProducts(element); // Her eleman için ürün miktarını bulur
+                unit = findUnit(element); // Her eleman için ürün birimini bulur
 
-            // Birim GR, ML veya G ise (1000) "alt tipe dönüşüm" yapılır
-            if (unit == "GR" || unit == "ML" || unit == "G") {
-                factor = wantedQuantity * x / productQuantity;
+                // Birim GR, ML veya G ise (1000) "alt tipe dönüşüm" yapılır
+                if (unit == "GR" || unit == "ML" || unit == "G") {
+                    factor = wantedQuantity * x / productQuantity;
+                }
+                // Birim KG, LT veya L ise (1000) ile çarparak "alt tipe dönüşüm" yapılır
+                else if (unit == "KG" || unit == "LT" || unit == "L") {
+                    factor = wantedQuantity * x / productQuantity / 1000;
+                }
+                else {
+                    factor = wantedQuantity * x / productQuantity;
+                }
 
-            } 
-            // Birim KG, LT veya L ise (1000) ile çarparak "alt tipe dönüşüm" yapılır
-            else if (unit == "KG" || unit == "LT" || unit == "L") {
-                factor = wantedQuantity * x / productQuantity / 1000;
-            }
-            else {
-                factor = wantedQuantity * x / productQuantity;
-            }
+                listForReturn[index].requested_price = element.product_price * factor;
+                avgPrice += listForReturn[index].requested_price;
 
-            listForReturn[index].requested_price = element.product_price * factor;
-            avgPrice += listForReturn[index].requested_price;
-
-            if (element.product_price < cheapestPrice) {
-                cheapestPrice = element.product_price; // Burada cheapestPrice değişkeninin güncellenmesi eksikti
-                cheapestProduct = element;
+                if (element.product_price < cheapestPrice) {
+                    cheapestPrice = element.product_price;
+                    cheapestProduct = element;
+                }
             }
 
             index++;
+            avgPrice = avgPrice / index;
         });
-        avgPrice = avgPrice / index;
+
 
         return {
             'productList': listForReturn,
             'cheapestProduct': cheapestProduct,
             'averagePrice': avgPrice
         };
-    } catch(err) {
+    }
+    catch (err) {
         console.log(err);
     }
 }
@@ -76,18 +79,19 @@ function findUnit(product) {
 }
 
 // Seçilen ürünlerin toplam değerini hesaplar
-module.exports.calculateTotalValueOfRecipe = function(selectedProducts) {
+module.exports.calculateTotalValueOfRecipe = function (selectedProducts) {
     var totalPrice = 0;
 
     try {
         selectedProducts.forEach(element => {
+            if(element.cheapestProduct){
             try {
-                totalPrice += element.requested_price;
+                totalPrice += element.averagePrice;
             } catch (err) {
                 console.log(err);
-            }
+            }}
         });
-    } catch(err) {
+    } catch (err) {
         console.log(err);
     }
 
