@@ -400,7 +400,6 @@ const postfoodRecipe = async (req, res, next) => {
 
     const newProduct = new foodRecipes(informations);
     await newProduct.save();
-    res.json(newProduct)
     res.redirect('../');
     console.log(product_name + ' başarı ile veritabanına eklendi.');
   } catch (err) {
