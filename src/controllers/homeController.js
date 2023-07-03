@@ -10,6 +10,8 @@ const priceCalculateModule = require("./BusinessModules/ProductModules/priceCalc
 const jcc = require('json-case-convertor');
 const { escape } = require('mysql');
 const { parse } = require('cookie');
+const { v4: uuidv4 } = require('uuid');
+
 
 const homePage = async (req, res, next) => {
   try {
@@ -426,8 +428,11 @@ const Login = async (req, res, next) => {
 const Register = async (req, res, next) => {
   try {
     const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(req.body.sifre, saltRounds);
+    const password = req.body.sifre;
+
+    const passwordHash = await bcrypt.hash(password, saltRounds);
     const uniqueId = uuidv4();
+
     const informations = {
       kullaniciAdi: req.body.kullaniciAdi,
       sifre: passwordHash,
@@ -435,20 +440,14 @@ const Register = async (req, res, next) => {
       nameSurname: req.body.nameSurname,
       User_ID: uniqueId,
     };
-    const password = req.body.sifre;
 
-    bcrypt.hash(password, saltRounds, async (err, hash) => {
-      if (err) {
-        console.log("Hashleme hatası", err);
-      } else {
-        const newUser = new User(informations);
-        await newUser.save();
-        res.redirect("../");
-        console.log(req.body.kullaniciAdi + " başarıyla veritabanına eklendi.");
-      }
-    });
+    const newUser = new User(informations);
+    await newUser.save();
+
+    res.redirect("../");
+    console.log(req.body.kullaniciAdi + " başarıyla veritabanına eklendi.");
   } catch (err) {
-    console.log(err);
+    console.log("Hata:", err);
   }
 };
 
