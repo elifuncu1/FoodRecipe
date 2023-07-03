@@ -9,7 +9,7 @@
     "start": "node app.js"
   },
   "keywords": [],
-  "author": "Sercan Kantar",
+  "author": "Melik firat basci",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -44,5 +44,9 @@
     "tough-cookie": "^4.0.0",
     "tough-cookie-filestore2": "^1.0.0",
     "uuid": "^9.0.0"
+  },
+  "engines": {
+    "node": "19.2.0"
   }
+  
 }

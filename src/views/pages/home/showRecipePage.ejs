@@ -58,7 +58,7 @@
 
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-section set-bg" 
-data-setbg="/uploads/images/<%- findedRecipe.Recipe_photo %>">
+data-setbg="/uploads/images/<%- findedRecipe.Recipe_photo[0] %>">
 <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
@@ -88,19 +88,16 @@ data-setbg="/uploads/images/<%- findedRecipe.Recipe_photo %>">
                 <div class="product__details__pic">
                     <div class="product__details__pic__item">
                         <img class="product__details__pic__item--large"
-                            src="/uploads/images/<%- findedRecipe.Recipe_photo %>" alt="">
+                            src="/uploads/images/<%- findedRecipe.Recipe_photo[0] %>" alt="">
                     </div>
                     <div class="product__details__pic__slider owl-carousel">
-                        <img data-imgbigurl="img/product/details/product-details-2.jpg"
-                            src="/user/assets/img/product/details/thumb-1.jpg" alt="">
-                        <img data-imgbigurl="img/product/details/product-details-3.jpg"
-                            src="/user/assets/img/product/details/thumb-2.jpg" alt="">
-                        <img data-imgbigurl="img/product/details/product-details-5.jpg"
-                            src="/user/assets/img/product/details/thumb-3.jpg" alt="">
-                        <img data-imgbigurl="img/product/details/product-details-4.jpg"
-                            src="/user/assets/img/product/details/thumb-4.jpg" alt="">
+                        <% for(let i = 1; i < findedRecipe.Recipe_photo.length; i++) { %>
+                            <img data-imgbigurl="/uploads/images/<%- findedRecipe.Recipe_photo[i] %>"
+                                src="/uploads/images/<%- findedRecipe.Recipe_photo[i] %>" alt="">
+                        <% } %>
                     </div>
                 </div>
+                
             </div>
 
             <div class="col-lg-6 col-md-6">

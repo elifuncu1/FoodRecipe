@@ -344,7 +344,11 @@ const postfoodRecipe = async (req, res, next) => {
     const products = []; // products adlı boş bir dizi oluşturuldu
     let price = 0;
     const foodIngredients = JSON.parse(req.body.foodIngredients);
-    const photos = req.files.photos;
+    const photos = [];
+    for (let index = 0; index < req.files.length; index++) {
+      const element = req.files[index].filename;
+      photos.push(element)
+    }
 
     const ingredients = await Promise.all(foodIngredients.map(async (ingredient) => {
       const productFind = await Products.find({

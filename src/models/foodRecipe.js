@@ -20,7 +20,7 @@ const RecipeSchema = new Schema({
         }]
     },
     Recipe_photo: {
-        type: String,
+        type: [String], // Dizi olarak tanımlanması
         trim: true
     },
     Recipe_Category: {
