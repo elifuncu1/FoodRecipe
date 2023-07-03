@@ -9,21 +9,48 @@ const Review = require('../models/reviewModel');
 const priceCalculateModule = require("./BusinessModules/ProductModules/priceCalculateModule");
 const jcc = require('json-case-convertor');
 const { escape } = require('mysql');
+const { parse } = require('cookie');
 
 const homePage = async (req, res, next) => {
   try {
     const categories = await RecipeCategories.find();
     const topRatedRecipes = await foodRecipes.find({ Recipe_Rate: { $exists: true } })
-    .sort({ Recipe_Rate: -1 })
-    .limit(20);
-      const latestRecipeList = await foodRecipes.find().sort({ _id: -1 }).limit(9);
-    const randomRecipeList = await foodRecipes.aggregate([{ $sample: { size: 9 } }]);
+      .sort({ Recipe_Rate: -1 })
+      .limit(9);
+    const latestRecipeList = await foodRecipes.find().sort({ _id: -1 }).limit(9);
+    const randomRecipeList = await foodRecipes.aggregate([{ $sample: { size: 20 } }]);
 
-res.json(topRatedRecipes)
-    
 
-    res.render('home/homePage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: ``, categories,topRatedRecipes,latestRecipeList,randomRecipeList})
+
+    res.render('home/homePage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: ``, categories, topRatedRecipes, latestRecipeList, randomRecipeList })
   }
+  catch (err) {
+    console.log(err)
+  }
+}
+const showRecipeWithCategory = async (req, res, next) => {
+  try {
+    const categories = await RecipeCategories.find();
+    const selectedRecipes = await foodRecipes.find({ Recipe_Category: req.params.categoryName })
+
+
+
+
+    res.render('home/showWithCategoryPage', { layout: '../layouts/Home/homeLayout', title: `Yemek Tarifleri`, description: ``, keywords: ``, categories, selectedRecipes })
+  }
+  catch (err) {
+    console.log(err)
+  }
+}
+const showAddRecipePage = async (req, res, next) => {
+  try {
+    const ingredients = await FoodIngredients.find({ active: "1" })
+    const categories = await RecipeCategories.find();
+
+
+    res.render('user/addFoodRecipePage', { layout: '../layouts/free', title: `Tarif Ekle`, description: ``, keywords: ``, ingredients, categories })
+  }
+
   catch (err) {
     console.log(err)
   }
@@ -36,7 +63,7 @@ const GetPrice = async (req, res, next) => {
     const findedRecipe = await foodRecipes.findOne({ Recipe_Name: req.params.recipeName });
     const reviews = await getFoodRecipeReviews(findedRecipe._id)
     const recipeIngredients = findedRecipe.Recipe_Ingredients;
-    //   const ProductList = recipeIngredients.map(ingredient => ingredient.name);
+
     const foodFindPromises = recipeIngredients.map(async (ingredient) => {
       const FoodFind = await Products.find({
         $and: [
@@ -45,18 +72,17 @@ const GetPrice = async (req, res, next) => {
         ]
       });
 
-
-
       return FoodFind;
     });
+
     const FoodFinds = await Promise.all(foodFindPromises);
     const IngredientsList = [];
     const ProductsList = [];
 
-
     for (let i = 0; i < recipeIngredients.length; i++) {
       const ingredient = recipeIngredients[i];
       const FoodFind = FoodFinds[i];
+
       const info = {
         FoodName: ingredient.name,
         SubName: ingredient.subname,
@@ -64,17 +90,18 @@ const GetPrice = async (req, res, next) => {
         wantedQuantity: ingredient.weight,
         x: 1
       };
+
       ProductsList.push(await priceCalculateModule.getCostOfProduct(await jcc.upperCaseValues(info.productList), info.wantedQuantity, info.x));
       IngredientsList.push(await FoodIngredients.findOne({ Ingredients_SubName: recipeIngredients[i].subname }));
     }
-    //res.json(ProductsList)
 
-    res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: 'Yemek Tarifleri', description: '', keywords: '', findedRecipe, IngredientsList, ProductsList, categories,reviews });
+    res.render('home/showRecipePage', { layout: '../layouts/Home/homeLayout', title: 'Yemek Tarifleri', description: '', keywords: '', findedRecipe, IngredientsList, ProductsList, categories, reviews });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+
 const showDetailsOfRecipePage = async (req, res, next) => {
   try {
     const findedRecipe = await foodRecipes.findOne({ Recipe_Name: req.params.recipeName });
@@ -141,7 +168,7 @@ const getFoodRecipeReviews = async function (recipeId) {
     return reviews
 
   }
-  catch(err){
+  catch (err) {
     console.log(err)
   }
 
@@ -194,7 +221,15 @@ const postFoodRecipeReview = async (req, res, next) => {
 
 
 
-
+const showUserDetailsPage = async (req, res, next) => {
+  try {
+    const cookies = parse(req.headers.cookie || '');
+    const loggedUser = await User.findOne({ User_ID: cookies.loggedUser });
+    res.render('user/userDetailsPage', { layout: '../layouts/Home/homeLayout', title: `Kullanıcı bilgileri`, description: ``, keywords: ``, loggedUser });
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 
 const showLoginPage = async (req, res, next) => {
@@ -298,8 +333,71 @@ const GetFoodIngredientsList = async (req, res, next) => {
 //Get/test 
 const Test = async (req, res, next) => {
 }
+const postfoodRecipe = async (req, res, next) => {
+  try {
+    const {
+      product_name,
+      recipeCategory,
+      product_description,
+      video
+    } = req.body;
+    const products = []; // products adlı boş bir dizi oluşturuldu
+    let price = 0;
+    const foodIngredients = JSON.parse(req.body.foodIngredients);
+    const photos = req.files.photos;
 
+    const ingredients = await Promise.all(foodIngredients.map(async (ingredient) => {
+      const productFind = await Products.find({
+        $and: [
+          { product_name: { $regex: new RegExp(ingredient.subname, 'i') } },
+          { product_category: { $regex: new RegExp(`^${ingredient.category}$`, 'i') } }
+        ]
+      });
 
+      if (productFind.length > 0) {
+        products.push({
+          Ingredients_Weight: ingredient.Ingredients_Weight,
+          Product: productFind
+        });
+
+        return {
+          subname: ingredient.Ingredients_SubName,
+          weight: ingredient.Ingredients_Weight,
+          category: ingredient.Ingredients_SubCategory,
+          name: ingredient.Ingredients_Name,
+          quantity: ingredient.quantity
+        };
+      }
+    }));
+
+    for (const prod of products) {
+      const costOfProduct = await priceCalculateModule.getCostOfProduct(jcc.upperCaseValues(prod.Product), prod.Ingredients_Weight, 1).cheapestProduct;
+      if (costOfProduct) {
+        price += costOfProduct.requested_price;
+      }
+    }
+
+    console.log("Total Price:", price);
+
+    const informations = {
+      Recipe_Name: product_name,
+      Recipe_Description: product_description,
+      Recipe_Category: recipeCategory,
+      Recipe_Video: video,
+      Recipe_Ingredients: ingredients,
+      Recipe_photo: photos,
+      Recipe_Price: price,
+      Ingredients_Active: "1"
+    };
+
+    const newProduct = new foodRecipes(informations);
+    await newProduct.save();
+    res.redirect('../');
+    console.log(product_name + ' başarı ile veritabanına eklendi.');
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 
 
@@ -353,6 +451,7 @@ const Register = async (req, res, next) => {
 
 module.exports = {
   GetPrice,
+  showRecipeWithCategory,
   getProductsWithPrice,
   postFoodRecipeReview,
   Login,
@@ -365,4 +464,7 @@ module.exports = {
   showDetailsOfRecipePage,
   showLoginPage,
   showRegisterPage,
+  showUserDetailsPage,
+  showAddRecipePage,
+  postfoodRecipe
 }

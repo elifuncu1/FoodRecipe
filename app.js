@@ -100,7 +100,7 @@ app.use(function(req, res, next) {
 
 
 app.use('/', homeRouter,authRouter);
-app.use('/izzycodes', authRouter, adminRouter);
+app.use('/admin', authRouter, adminRouter);
 
 app.use((req, res) => {
     res.status(404).redirect('/')

@@ -2,13 +2,8 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="description" content="Ogani Template">
-  <meta name="keywords" content="Ogani, unica, creative, html">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title><%- title %></title> 
-   <style>
+  <title>Yemek Tarifi Ekle</title>
+  <style>
     body {
       background-color: #f9f9f9;
       color: #333333;
@@ -98,6 +93,9 @@
 </head>
 
 <body>
+  <div class="col-lg-12"  style="text-align: center;"></div>
+  <a href="/"><img src="/home/img/LogoMin.jpeg" alt="" ></a>
+
   <div class="container">
     <h1>Yemek Tarifi Ekle</h1>
 
@@ -132,7 +130,7 @@
 
     </form>
 
-    <form action="/admin/postfoodRecipe" method="post" enctype="multipart/form-data" id="recipe-form">
+    <form action="/postfoodRecipe" method="post" enctype="multipart/form-data" id="recipe-form">
       <div class="form-group">
         <label for="product_name">Yemek Tarifi Adı:</label>
         <input id="product_name" name="product_name" placeholder="Ürün Adı" class="form-control input-md" required

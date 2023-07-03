@@ -14,7 +14,7 @@ const showHomePage = async (req, res, next) => {
 
     try {
 
-
+        
         res.render('admin/homePage', { layout: '../layouts/adminHome_Layout', title: `Admin | IG Priv`, description: ``, keywords: `` })
 
 
@@ -69,7 +69,7 @@ const postFoodIngredients = async (req,res,next) => {
             
         );
         await newProduct.save();
-        res.redirect('../izzycode/addproduct');
+        res.redirect('../admin/addproduct');
         console.log(req.body.product_name+' başarı ile veritabanına eklendi.')
         const UpdateID = {
             Ingredients_CustomID : SpecialID[0].Ingredients_CustomID+1
@@ -128,7 +128,7 @@ const postfoodRecipe = async (req, res, next) => {
 
         const newProduct = new foodRecipes(informations);
         await newProduct.save();
-        res.redirect('../izzycode/recipe');
+        res.redirect('../admin/recipe');
         console.log(product_name + ' başarı ile veritabanına eklendi.');
     } catch (err) {
         console.log(err);

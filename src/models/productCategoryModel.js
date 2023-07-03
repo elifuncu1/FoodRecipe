@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema({
-    
-      subCategory: [{
-        type: String,
-        trim: true
-      }]
-    
+const CategorySchema = new Schema({
+  category: {
+    type: String,
+    trim: true
+  },
+  name: {
+    type: String,
+    trim: true
+  }
 }, { collection: 'ProductCategories' });
 
-const Admin = mongoose.model('ProductCategory', UserSchema);
+const CategoryModel = mongoose.model('ProductCategory', CategorySchema);
 
-module.exports = Admin;
+module.exports = CategoryModel;
