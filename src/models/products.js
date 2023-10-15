@@ -24,6 +24,10 @@ const UserSchema = new Schema({
     category_name: {
         type : String,
         trim : true
+    },
+    product_category: {
+        type: String,
+        trim: true
     }
    
 }, { collection: 'urunler',locale: 'tr', timestamps: true });

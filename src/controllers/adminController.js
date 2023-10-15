@@ -93,14 +93,9 @@ const postfoodRecipe = async (req, res, next) => {
         let price = 0;
         const foodIngredients = JSON.parse(req.body.foodIngredients);
         const photos = req.files.photos;
-
+        console.log(req.files)
         const ingredients = await Promise.all(foodIngredients.map(async (ingredient) => {
-            const productFind = await Products.find({
-              $and: [
-                { product_name: { $regex: new RegExp(ingredient.subname, 'i') } },
-                { product_category: { $regex: new RegExp(`^${ingredient.category}$`, 'i') } }
-              ]
-            });
+            const productFind = await Products.find({$and:[{product_name: {"$regex": ingredient.subname, $options: 'i' }},{product_category: {"$regex": ingredient.category, $options: 'i' }}]});
             const costOfProduct = await priceCalculateModule.getCostOfProduct(jcc.upperCaseValues(productFind), ingredient.Ingredients_Weight, 1).averagePrice;
             if (costOfProduct !== null) {
                 price += costOfProduct;

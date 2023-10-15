@@ -66,12 +66,7 @@ const GetPrice = async (req, res, next) => {
     const recipeIngredients = findedRecipe.Recipe_Ingredients;
 
     const foodFindPromises = recipeIngredients.map(async (ingredient) => {
-      const FoodFind = await Products.find({
-        $and: [
-          { product_name: { $regex: new RegExp(ingredient.subname, 'i') } },
-          { product_category: { $regex: new RegExp(`^${ingredient.category}$`, 'i') } }
-        ]
-      });
+      const FoodFind = await Products.find({$and:[{product_name: {"$regex": ingredient.subname, $options: 'i' }},{product_category: {"$regex": ingredient.category, $options: 'i' }}]});
 
       return FoodFind;
     });
@@ -114,12 +109,7 @@ const showDetailsOfRecipePage = async (req, res, next) => {
     const recipeIngredients = findedRecipe.Recipe_Ingredients;
     //   const ProductList = recipeIngredients.map(ingredient => ingredient.name);
     const foodFindPromises = recipeIngredients.map(async (ingredient) => {
-      const FoodFind = await Products.find({
-        $and: [
-          { product_name: { $regex: new RegExp(ingredient.subname, 'i') } },
-          { product_category: { $regex: new RegExp(`^${ingredient.category}$`, 'i') } }
-        ]
-      });
+      const FoodFind = await Products.find({$and:[{product_name: {"$regex": ingredient.subname, $options: 'i' }},{product_category: {"$regex": ingredient.category, $options: 'i' }}]});
 
 
 
@@ -355,14 +345,18 @@ const postfoodRecipe = async (req, res, next) => {
       const element = req.files[index].filename;
       photos.push(element)
     }
-
+    const productFind = await Products.find({
+      $and: [
+        { product_name: { "$regex": "Yağ", "$options": "i" } },
+        { product_category: "Sıvı Yağlar" }
+      ]
+    });
+    console.log(productFind)
     const ingredients = await Promise.all(foodIngredients.map(async (ingredient) => {
-      const productFind = await Products.find({
-        $and: [
-          { product_name: { $regex: new RegExp(ingredient.subname, 'i') } },
-          { product_category: { $regex: new RegExp(`^${ingredient.category}$`, 'i') } }
-        ]
-      });
+
+      const Name = ingredient.Ingredients_SubName
+      const Category = ingredient.Ingredients_SubCategory
+      const productFind = await Products.find({$and:[{product_name: {"$regex": Name, $options: 'i' }},{product_category: Category}]});
 
       if (productFind.length > 0) {
         products.push({
