@@ -22,7 +22,7 @@ require('./src/config/config');
 const homeRouter = require('./src/routers/homeRouter');
 const adminRouter = require('./src/routers/adminRouter');
 const authRouter = require('./src/routers/authRouter');
-
+const apiRouter = require('./src/routers/apiRouter');
 
 // Middleware (Gelen değerleri okumak)
 app.use(express.urlencoded({ extended: true }));
@@ -98,7 +98,7 @@ app.use(function(req, res, next) {
 });
 
 
-
+app.use('/api', apiRouter);
 app.use('/', homeRouter,authRouter);
 app.use('/admin', authRouter, adminRouter);
 
